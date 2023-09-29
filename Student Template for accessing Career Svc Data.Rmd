@@ -27,11 +27,11 @@ pacman::p_load(DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plot
 
 # Introduction and Purpose
 
-Write something here
+This project will utilize FSB Placement Data to provide information on the macro placement and salary trends over the past three years, specifically whether our results are increasing, decreasing, or being steady for FSB as a whole and by major.
 
 # Data Sources
 
-Write something here
+We will be using the FSB Survey Results from 2019 to 2021 as provided for our data analysis
 
 ## Read in the data
 
