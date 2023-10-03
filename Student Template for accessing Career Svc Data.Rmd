@@ -1,6 +1,6 @@
 ---
 title: "Cleaning the Combined BI And Survey Career Data"
-author: "Your Name Here"
+author: "Group 9: Linh Vu, Minh Mai"
 output:
   html_document:
     date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -18,7 +18,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE)
 
-#package intialization
+#package initialization
 rm(list = ls()) # clear global environment
 graphics.off() # close all graphics
 if(require(pacman)==FALSE) install.packages("pacman")
@@ -36,7 +36,51 @@ We will be using the FSB Survey Results from 2019 to 2021 as provided for our da
 ## Read in the data
 
 ```{r}
-data=readRDS(file = "FSB_BI_Survey_2019_2021.rds")
+data = readRDS(file = "FSB_BI_Survey_2019_2021.rds")
+
+head(data)
+```
+
+### Clean the STATE data
+
+```{r}
+# Convert to lowercase and remove white spaces
+data$survey_state <- tolower(trimws(data$survey_state))
+# Remove non-alphabetic characters
+data$survey_state <- gsub("[^a-z]", "", data$survey_state)
+# Remove 'usa', 'america', 'unitedstates', 'us', 'unitedstatesofamerica'
+data$survey_state <- gsub("usa|america|unitedstates|us|unitedstatesofamerica", "", data$survey_state)
+
+# Replace full state names with abbreviations
+state_abb <- c(
+  "al", "ak", "az", "ar", "ca", "co", "ct", "de", "fl", "ga", "hi", "id", "il", "in", "ia", "ks", "ky", 
+  "la", "me", "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", 
+  "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy", "dc"
+)
+state_full <- c(
+  "alabama", "alaska", "arizona", "arkansas", "california", 
+  "colorado", "connecticut", "delaware", "florida", "georgia", 
+  "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", 
+  "kentucky", "louisiana", "maine", "maryland", "massachusetts", 
+  "michigan", "minnesota", "mississippi", "missouri", "montana", 
+  "nebraska", "nevada", "newhampshire", "newjersey", "newmexico", 
+  "newyork", "northcarolina", "northdakota", "ohio", "oklahoma", 
+  "oregon", "pennsylvania", "rhodeisland", "southcarolina", 
+  "southdakota", "tennessee", "texas", "utah", "vermont", 
+  "virginia", "washington", "westvirginia", "wisconsin", "wyoming", 
+  "districtofcolumbia"
+)
+
+# Create a mapping dictionary
+state_mapping <- setNames(state_abb, state_full)
+
+# Map state names using the mapping dictionary and convert to uppercase
+data$survey_state <- ifelse(data$survey_state %in% state_full,
+                            state_mapping[data$survey_state], 
+                            data$survey_state)
+
+# Convert to uppercase
+data$survey_state <- toupper(data$survey_state)
 ```
 
 # Data Preprocessing
