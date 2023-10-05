@@ -98,9 +98,6 @@ data$survey_state[data$survey_state == ""] <- "NOT AVAILABLE"
 data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "NOT AVAILABLE"
 ```
 
-```{r}
-unique(data$survey_state)
-```
 # Data Preprocessing
 
 Describing each data preprocessing step with small chunks of code, output where necessary, and documentation
