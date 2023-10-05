@@ -81,8 +81,26 @@ data$survey_state <- ifelse(data$survey_state %in% state_full,
 
 # Convert to uppercase
 data$survey_state <- toupper(data$survey_state)
+
+# Adding fujianprovince and zhejiang province to china
+data$survey_state[data$survey_state == "FUJIANPROVINCE" | data$survey_state == "ZHEJIANGPROVINCE"] <- "CHINA"
+
+# Standardizing fields with misspells or alternative names
+data$survey_state[data$survey_state == "MICHIGANDETROIT"] <- "MI"
+data$survey_state[data$survey_state == "WASHINGTONDC"] <- "WA"
+data$survey_state[data$survey_state == "OHIOTHE"] <- "OH"
+data$survey_state[data$survey_state == "MASSACHETTS"] <- "MA"
+data$survey_state[data$survey_state == "VIRGINIAVA"] <- "VA"
+
+# Replacing blanks, na and miscellaneous values with "NOT AVAILABLE"
+data$survey_state[is.na(data$survey_state)] <- "NOT AVAILABLE"
+data$survey_state[data$survey_state == ""] <- "NOT AVAILABLE"
+data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "NOT AVAILABLE"
 ```
 
+```{r}
+unique(data$survey_state)
+```
 # Data Preprocessing
 
 Describing each data preprocessing step with small chunks of code, output where necessary, and documentation
