@@ -99,6 +99,7 @@ data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "N
 ```
 
 ### Clean the survey_company field
+
 ```{r}
 # Replacing company names that have JP Morgan or some variations with JP Morgan Chase
 data$survey_company[data$survey_company == "JP Morgan" | data$survey_company == "J.P Morgan" | data$survey_company == "J.P. Morgan" | data$survey_company == "J.P. Morgan U.S. Private Bank" | data$survey_company == "JP Morgan and Chase"  ] <- "JP Morgan Chase"
@@ -160,6 +161,18 @@ data$survey_company[data$survey_company == "Not Yet"] <- "NOT AVAILABLE"
 # Making all letters capital in a string
 data$survey_company <- str_to_upper(data$survey_company)
 ```
+
+This portion of the code is cleaning the survey_company section of the data. There are many company names that are misspelled or have additional symbols in their names, so we are trying to normalize all the different names under the one most frequently observed. Additionally, we also replaced na and blank values with "NOT AVAILABLE".
+
+# Our Computing Environment
+
+Our RStudio Version: 
+
+RStudio 2023.09.0+463 "Desert Sunflower" Release (b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36
+
+Additionally, we are using the packages DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable and tm.
+
 # Data Preprocessing
 
 Describing each data preprocessing step with small chunks of code, output where necessary, and documentation

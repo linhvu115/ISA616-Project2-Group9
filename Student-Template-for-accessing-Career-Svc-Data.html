@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Your Name Here" />
+<meta name="author" content="Group 9: Linh Vu, Minh Mai" />
 
 
 <title>Cleaning the Combined BI And Survey Career Data</title>
@@ -2865,7 +2865,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Cleaning the Combined BI And Survey Career
 Data</h1>
-<h4 class="author">Your Name Here</h4>
+<h4 class="author">Group 9: Linh Vu, Minh Mai</h4>
 
 </div>
 
@@ -2873,28 +2873,176 @@ Data</h1>
 <div id="introduction-and-purpose" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction and
 Purpose</h1>
-<p>Write something here</p>
+<p>This project will utilize FSB Placement Data to provide information
+on the macro placement and salary trends over the past three years,
+specifically whether our results are increasing, decreasing, or being
+steady for FSB as a whole and by major.</p>
 </div>
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Data Sources</h1>
-<p>Write something here</p>
+<p>We will be using the FSB Survey Results from 2019 to 2021 as provided
+for our data analysis</p>
 <div id="read-in-the-data" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Read in the data</h2>
-<pre class="r"><code>data=readRDS(file = &quot;FSB_BI_Survey_2019_2021.rds&quot;)</code></pre>
+<pre class="r"><code>data = readRDS(file = &quot;FSB_BI_Survey_2019_2021.rds&quot;)
+
+head(data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["nmajor"],"name":[1],"type":["int"],"align":["right"]},{"label":["major1"],"name":[2],"type":["fct"],"align":["left"]},{"label":["major2"],"name":[3],"type":["fct"],"align":["left"]},{"label":["BBRJ"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Business Direct Admit"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Combined Bacc and Masters"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Dean's List"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["First Generation College Stdnt"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["FSB Scholars"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Honors Program"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["President's List"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Study Abroad Courtesy Account"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Transfer Work (Pre-Banner)"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["Cum Laude"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["Magna Cum Laude"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["Summa Cum Laude"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["University Honors"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["UniversityHonors w/Distinction"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["minor1"],"name":[19],"type":["fct"],"align":["left"]},{"label":["minor2"],"name":[20],"type":["fct"],"align":["left"]},{"label":["IPEDS.Race.Ethnicity"],"name":[21],"type":["chr"],"align":["left"]},{"label":["Gender"],"name":[22],"type":["chr"],"align":["left"]},{"label":["GPA.Range"],"name":[23],"type":["chr"],"align":["left"]},{"label":["Term.Code"],"name":[24],"type":["int"],"align":["right"]},{"label":["year.x"],"name":[25],"type":["chr"],"align":["left"]},{"label":["latin_honors"],"name":[26],"type":["chr"],"align":["left"]},{"label":["survey_city"],"name":[27],"type":["chr"],"align":["left"]},{"label":["survey_company"],"name":[28],"type":["chr"],"align":["left"]},{"label":["survey_deptfunc"],"name":[29],"type":["chr"],"align":["left"]},{"label":["survey_gradprogram"],"name":[30],"type":["chr"],"align":["left"]},{"label":["survey_gradschool"],"name":[31],"type":["chr"],"align":["left"]},{"label":["survey_internfour"],"name":[32],"type":["chr"],"align":["left"]},{"label":["survey_internone"],"name":[33],"type":["chr"],"align":["left"]},{"label":["survey_internships"],"name":[34],"type":["chr"],"align":["left"]},{"label":["survey_internthree"],"name":[35],"type":["chr"],"align":["left"]},{"label":["survey_interntwo"],"name":[36],"type":["chr"],"align":["left"]},{"label":["survey_offers"],"name":[37],"type":["chr"],"align":["left"]},{"label":["survey_plans"],"name":[38],"type":["chr"],"align":["left"]},{"label":["survey_pref_field"],"name":[39],"type":["chr"],"align":["left"]},{"label":["survey_pref_loc"],"name":[40],"type":["chr"],"align":["left"]},{"label":["survey_salary"],"name":[41],"type":["dbl"],"align":["right"]},{"label":["survey_state"],"name":[42],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"Marketing","3":"none","4":"0","5":"1","6":"0","7":"0","8":"0","9":"0","10":"0","11":"0","12":"0","13":"0","14":"0","15":"0","16":"0","17":"0","18":"0","19":"No Minor","20":"No Minor","21":"Hispanic/Latino","22":"Male","23":"2.00 - 2.49","24":"202015","25":"2020","26":"0","27":"NA","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"seeking continuing education","39":"NA","40":"NA","41":"NA","42":"NA","_rn_":"1"},{"1":"1","2":"Finance","3":"none","4":"0","5":"1","6":"0","7":"0","8":"0","9":"0","10":"0","11":"0","12":"0","13":"0","14":"0","15":"0","16":"0","17":"0","18":"0","19":"Business Legal Studies","20":"No Minor","21":"White","22":"Male","23":"3.00 - 3.49","24":"201920","25":"2019","26":"0","27":"Toledo","28":"BAM Nutual","29":"Finance","30":"NA","31":"NA","32":"NA","33":"NA","34":"0","35":"NA","36":"NA","37":"0","38":"accepted fulltime job","39":"Yes","40":"Yes","41":"NA","42":"Ohio","_rn_":"2"},{"1":"1","2":"Marketing","3":"none","4":"0","5":"1","6":"0","7":"1","8":"0","9":"0","10":"0","11":"0","12":"0","13":"0","14":"1","15":"0","16":"0","17":"0","18":"0","19":"Humanities","20":"Humanities","21":"Asian","22":"Female","23":"3.50 - 4.00","24":"202120","25":"2021","26":"0","27":"Columbus","28":"CoHatch","29":"General Management","30":"NA","31":"NA","32":"NA","33":"Second Time Founders","34":"2","35":"NA","36":"La Soupe","37":"1","38":"accepted fulltime job","39":"Yes","40":"Yes","41":"40000","42":"OH","_rn_":"3"},{"1":"1","2":"Finance","3":"none","4":"0","5":"1","6":"0","7":"0","8":"1","9":"0","10":"0","11":"0","12":"0","13":"0","14":"0","15":"0","16":"0","17":"0","18":"0","19":"Accountancy","20":"Accountancy","21":"White","22":"Male","23":"3.00 - 3.49","24":"202020","25":"2020","26":"0","27":"NA","28":"PwC","29":"NA","30":"NA","31":"NA","32":"NA","33":"Bauer Hockey","34":"2","35":"NA","36":"IHS Markit","37":"NA","38":"accepted fulltime job","39":"NA","40":"NA","41":"NA","42":"NA","_rn_":"4"},{"1":"1","2":"Marketing","3":"none","4":"0","5":"1","6":"0","7":"1","8":"0","9":"0","10":"0","11":"0","12":"0","13":"0","14":"0","15":"0","16":"0","17":"0","18":"0","19":"Supply Chain Management","20":"Supply Chain Management","21":"White","22":"Male","23":"3.00 - 3.49","24":"201920","25":"2019","26":"0","27":"Columbus","28":"Abercrombie & Fitch","29":"General Management","30":"NA","31":"NA","32":"NA","33":"Nouveau Vie, LLC.","34":"2","35":"NA","36":"Abercrombie & Fitch","37":"1","38":"accepted fulltime job","39":"Yes","40":"Yes","41":"63500","42":"Ohio","_rn_":"5"},{"1":"1","2":"Marketing","3":"none","4":"0","5":"1","6":"0","7":"0","8":"0","9":"0","10":"0","11":"0","12":"0","13":"1","14":"0","15":"0","16":"0","17":"0","18":"0","19":"Humanities","20":"Humanities","21":"White","22":"Female","23":"3.00 - 3.49","24":"202020","25":"2020","26":"0","27":"Cleveland","28":"McDonald's","29":"Consulting Marketing / Sales Operations / Procurement","30":"NA","31":"NA","32":"Victoria's Secret","33":"CNN / Turner Broadcasting","34":"4","35":"Oxford Medical Aesthetics and Laser","36":"Hylant","37":"4","38":"accepted fulltime job","39":"Yes","40":"Yes","41":"68000","42":"OH","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="clean-the-state-data" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Clean the STATE
+data</h3>
+<pre class="r"><code># Convert to lowercase and remove white spaces
+data$survey_state &lt;- tolower(trimws(data$survey_state))
+# Remove non-alphabetic characters
+data$survey_state &lt;- gsub(&quot;[^a-z]&quot;, &quot;&quot;, data$survey_state)
+# Remove &#39;usa&#39;, &#39;america&#39;, &#39;unitedstates&#39;, &#39;us&#39;, &#39;unitedstatesofamerica&#39;
+data$survey_state &lt;- gsub(&quot;usa|america|unitedstates|us|unitedstatesofamerica&quot;, &quot;&quot;, data$survey_state)
+
+# Replace full state names with abbreviations
+state_abb &lt;- c(
+  &quot;al&quot;, &quot;ak&quot;, &quot;az&quot;, &quot;ar&quot;, &quot;ca&quot;, &quot;co&quot;, &quot;ct&quot;, &quot;de&quot;, &quot;fl&quot;, &quot;ga&quot;, &quot;hi&quot;, &quot;id&quot;, &quot;il&quot;, &quot;in&quot;, &quot;ia&quot;, &quot;ks&quot;, &quot;ky&quot;, 
+  &quot;la&quot;, &quot;me&quot;, &quot;md&quot;, &quot;ma&quot;, &quot;mi&quot;, &quot;mn&quot;, &quot;ms&quot;, &quot;mo&quot;, &quot;mt&quot;, &quot;ne&quot;, &quot;nv&quot;, &quot;nh&quot;, &quot;nj&quot;, &quot;nm&quot;, &quot;ny&quot;, &quot;nc&quot;, &quot;nd&quot;, 
+  &quot;oh&quot;, &quot;ok&quot;, &quot;or&quot;, &quot;pa&quot;, &quot;ri&quot;, &quot;sc&quot;, &quot;sd&quot;, &quot;tn&quot;, &quot;tx&quot;, &quot;ut&quot;, &quot;vt&quot;, &quot;va&quot;, &quot;wa&quot;, &quot;wv&quot;, &quot;wi&quot;, &quot;wy&quot;, &quot;dc&quot;
+)
+state_full &lt;- c(
+  &quot;alabama&quot;, &quot;alaska&quot;, &quot;arizona&quot;, &quot;arkansas&quot;, &quot;california&quot;, 
+  &quot;colorado&quot;, &quot;connecticut&quot;, &quot;delaware&quot;, &quot;florida&quot;, &quot;georgia&quot;, 
+  &quot;hawaii&quot;, &quot;idaho&quot;, &quot;illinois&quot;, &quot;indiana&quot;, &quot;iowa&quot;, &quot;kansas&quot;, 
+  &quot;kentucky&quot;, &quot;louisiana&quot;, &quot;maine&quot;, &quot;maryland&quot;, &quot;massachusetts&quot;, 
+  &quot;michigan&quot;, &quot;minnesota&quot;, &quot;mississippi&quot;, &quot;missouri&quot;, &quot;montana&quot;, 
+  &quot;nebraska&quot;, &quot;nevada&quot;, &quot;newhampshire&quot;, &quot;newjersey&quot;, &quot;newmexico&quot;, 
+  &quot;newyork&quot;, &quot;northcarolina&quot;, &quot;northdakota&quot;, &quot;ohio&quot;, &quot;oklahoma&quot;, 
+  &quot;oregon&quot;, &quot;pennsylvania&quot;, &quot;rhodeisland&quot;, &quot;southcarolina&quot;, 
+  &quot;southdakota&quot;, &quot;tennessee&quot;, &quot;texas&quot;, &quot;utah&quot;, &quot;vermont&quot;, 
+  &quot;virginia&quot;, &quot;washington&quot;, &quot;westvirginia&quot;, &quot;wisconsin&quot;, &quot;wyoming&quot;, 
+  &quot;districtofcolumbia&quot;
+)
+
+# Create a mapping dictionary
+state_mapping &lt;- setNames(state_abb, state_full)
+
+# Map state names using the mapping dictionary and convert to uppercase
+data$survey_state &lt;- ifelse(data$survey_state %in% state_full,
+                            state_mapping[data$survey_state], 
+                            data$survey_state)
+
+# Convert to uppercase
+data$survey_state &lt;- toupper(data$survey_state)
+
+# Adding fujianprovince and zhejiang province to china
+data$survey_state[data$survey_state == &quot;FUJIANPROVINCE&quot; | data$survey_state == &quot;ZHEJIANGPROVINCE&quot;] &lt;- &quot;CHINA&quot;
+
+# Standardizing fields with misspells or alternative names
+data$survey_state[data$survey_state == &quot;MICHIGANDETROIT&quot;] &lt;- &quot;MI&quot;
+data$survey_state[data$survey_state == &quot;WASHINGTONDC&quot;] &lt;- &quot;WA&quot;
+data$survey_state[data$survey_state == &quot;OHIOTHE&quot;] &lt;- &quot;OH&quot;
+data$survey_state[data$survey_state == &quot;MASSACHETTS&quot;] &lt;- &quot;MA&quot;
+data$survey_state[data$survey_state == &quot;VIRGINIAVA&quot;] &lt;- &quot;VA&quot;
+
+# Replacing blanks, na and miscellaneous values with &quot;NOT AVAILABLE&quot;
+data$survey_state[is.na(data$survey_state)] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_state[data$survey_state == &quot;&quot;] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_state[data$survey_state == &quot;TBA&quot; | data$survey_state == &quot;TBD&quot;] &lt;- &quot;NOT AVAILABLE&quot;</code></pre>
+</div>
+<div id="clean-the-survey_company-field" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Clean the
+survey_company field</h3>
+<pre class="r"><code># Replacing company names that have JP Morgan or some variations with JP Morgan Chase
+data$survey_company[data$survey_company == &quot;JP Morgan&quot; | data$survey_company == &quot;J.P Morgan&quot; | data$survey_company == &quot;J.P. Morgan&quot; | data$survey_company == &quot;J.P. Morgan U.S. Private Bank&quot; | data$survey_company == &quot;JP Morgan and Chase&quot;  ] &lt;- &quot;JP Morgan Chase&quot;
+data$survey_company[data$survey_company == &quot;JPMorgan Chase &amp; Co.&quot;] &lt;- &quot;JP Morgan Chase&quot; 
+data$survey_company[data$survey_company == &quot;JPMorgan Chase&quot;] &lt;- &quot;JP Morgan Chase&quot; 
+
+# Replacing company names with alternative spelling name for EY
+data$survey_company[data$survey_company == &quot;Ernst &amp; Young&quot;] &lt;- &quot;EY&quot;
+data$survey_company[data$survey_company == &quot;Ernst and Young&quot;] &lt;- &quot;EY&quot;
+
+# Replacing company names with alternative spelling name for Textron
+data$survey_company[data$survey_company == &quot;Textron Aviation&quot;] &lt;- &quot;Textron&quot;
+data$survey_company[data$survey_company == &quot;Textron Systems&quot;] &lt;- &quot;Textron&quot;
+data$survey_company[data$survey_company == &quot;Textron Specialized Vehicles&quot;] &lt;- &quot;Textron&quot;
+
+# Replacing company names with alternative spelling name for Coyote Logistics
+data$survey_company[data$survey_company == &quot;CoyoteLogisitcs&quot;] &lt;- &quot;Coyote Logisitcs&quot;
+data$survey_company[data$survey_company == &quot;Coyote&quot;] &lt;- &quot;Coyote Logisitcs&quot;
+
+# Replacing company names with alternative spelling name for Deloitte
+data$survey_company[data$survey_company == &quot;Deloitte Consulting&quot;] &lt;- &quot;Deloitte&quot;
+data$survey_company[data$survey_company == &quot;Deloitte LLP&quot;]  &lt;- &quot;Deloitte&quot;       
+data$survey_company[data$survey_company == &quot;Deloitte Tax&quot;]  &lt;- &quot;Deloitte&quot;       
+data$survey_company[data$survey_company == &quot;Deloitte, China&quot;] &lt;- &quot;Deloitte&quot;
+
+# Replacing company names with alternative spelling name for PNC
+data$survey_company[data$survey_company == &quot;PNC Bank&quot;] &lt;- &quot;PNC&quot;
+data$survey_company[data$survey_company == &quot;PNC Financial Services&quot;] &lt;- &quot;PNC&quot;
+
+# Replacing company names with alternative spelling name for Grainger
+data$survey_company[data$survey_company == &quot;WW Grainger&quot;] &lt;- &quot;W.W. Grainger&quot;
+data$survey_company[data$survey_company == &quot;Grainger&quot;] &lt;- &quot;W.W. Grainger&quot;
+
+# Replacing company names with alternative spelling name for Oracle
+data$survey_company[data$survey_company == &quot;Oracle Netsuite&quot;] &lt;- &quot;Oracle&quot;
+data$survey_company[data$survey_company == &quot;Oracle NetSuite&quot;] &lt;- &quot;Oracle&quot;
+data$survey_company[data$survey_company == &quot;Oracle - Netsuite&quot;] &lt;- &quot;Oracle&quot;
+
+# Replacing other company names with alternative spelling name 
+data$survey_company[data$survey_company ==  &quot;PWC&quot;] &lt;- &quot;PwC&quot;
+data$survey_company[data$survey_company == &quot;Brown Gibbons Lang &amp; Co.&quot;] &lt;- &quot;Brown Gibbons Lang &amp; Company&quot;
+data$survey_company[data$survey_company == &quot;Abercrombie &amp; Fitch&quot;] &lt;- &quot;Abercrombie&quot;
+data$survey_company[data$survey_company == &quot;The Cincinnati Insurance Company&quot;] &lt;- &quot;The Cincinnati Insurance Companies&quot;
+data$survey_company[data$survey_company == &quot;Cincinnati Insurance&quot;] &lt;- &quot;The Cincinnati Insurance Companies&quot;
+data$survey_company[data$survey_company == &quot;Cincinnati Insurance Company&quot;] &lt;- &quot;The Cincinnati Insurance Companies&quot;
+data$survey_company[data$survey_company == &quot;Terillium&quot;] &lt;- &quot;Terrilium&quot;
+data$survey_company[data$survey_company == &quot;84.51&quot;] &lt;- &quot;84.51º&quot;
+data$survey_company[data$survey_company == &quot;Abbott Nutrition&quot;] &lt;- &quot;Abbott&quot;
+data$survey_company[data$survey_company == &quot;CIBC US&quot;] &lt;- &quot;CIBC&quot;
+data$survey_company[data$survey_company == &quot;Oppenheimer &amp; Co. Inc.&quot;] &lt;- &quot;Oppenheimer &amp; Co Inc.&quot;
+
+# Replacing blanks, na and miscellaneous values with &quot;NOT AVAILABLE&quot;
+data$survey_company[is.na(data$survey_company)] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_company[data$survey_company == &quot;&quot;] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_company[data$survey_company == &quot;na&quot;] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_company[data$survey_company == &quot;N/A&quot;] &lt;- &quot;NOT AVAILABLE&quot;
+data$survey_company[data$survey_company == &quot;Not Yet&quot;] &lt;- &quot;NOT AVAILABLE&quot;
+
+# Making all letters capital in a string
+data$survey_company &lt;- str_to_upper(data$survey_company)</code></pre>
+<p>This portion of the code is cleaning the survey_company section of
+the data. There are many company names that are misspelled or have
+additional symbols in their names, so we are trying to normalize all the
+different names under the one most frequently observed. Additionally, we
+also replaced na and blank values with “NOT AVAILABLE”.</p>
 </div>
 </div>
-<div id="data-preprocessing" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Data Preprocessing</h1>
+</div>
+<div id="our-computing-environment" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Our Computing
+Environment</h1>
+<p>Our RStudio Version:</p>
+<p>RStudio 2023.09.0+463 “Desert Sunflower” Release
+(b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0
+Safari/537.36</p>
+<p>Additionally, we are using the packages
+DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable
+and tm.</p>
+</div>
+<div id="data-preprocessing" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Data Preprocessing</h1>
 <p>Describing each data preprocessing step with small chunks of code,
 output where necessary, and documentation</p>
 </div>
-<div id="the-rest-of-your-document" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> The rest of your
+<div id="the-rest-of-your-document" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> The rest of your
 document</h1>
 <p>Add sections and subsections as necessary to guide your analysis</p>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNsZWFuaW5nIHRoZSBDb21iaW5lZCBCSSBBbmQgU3VydmV5IENhcmVlciBEYXRhIg0KYXV0aG9yOiAiWW91ciBOYW1lIEhlcmUiDQpvdXRwdXQ6DQogIGh0bWxfZG9jdW1lbnQ6DQogICAgZGF0ZTogImByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIsICVZJylgIg0KICAgIGNvZGVfZm9sZGluZzogaGlkZQ0KICAgIGRmX3ByaW50OiBwYWdlZA0KICAgIG51bWJlcl9zZWN0aW9uczogeWVzDQogICAgdGhlbWU6IGNlcnVsZWFuDQogICAgdG9jOiB5ZXMNCiAgICB0b2NfZmxvYXQ6IHllcw0KICAgIGNvZGVfZG93bmxvYWQ6IHRydWUNCiAgd29yZF9kb2N1bWVudDoNCiAgICB0b2M6IG5vDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUsbWVzc2FnZT1GQUxTRSx3YXJuaW5nPUZBTFNFKQ0KDQojcGFja2FnZSBpbnRpYWxpemF0aW9uDQpybShsaXN0ID0gbHMoKSkgIyBjbGVhciBnbG9iYWwgZW52aXJvbm1lbnQNCmdyYXBoaWNzLm9mZigpICMgY2xvc2UgYWxsIGdyYXBoaWNzDQppZihyZXF1aXJlKHBhY21hbik9PUZBTFNFKSBpbnN0YWxsLnBhY2thZ2VzKCJwYWNtYW4iKQ0KcGFjbWFuOjpwX2xvYWQoRGF0YUV4cGxvcmVyLHRpZHl2ZXJzZSxyZWFkeGwsem9vLHN0YXJnYXplcixrYWJsZUV4dHJhLHNraW1yLHBsb3RseSxnZ3B1YnIsdnRhYmxlLHRtKQ0KYGBgDQoNCiMgSW50cm9kdWN0aW9uIGFuZCBQdXJwb3NlDQoNCldyaXRlIHNvbWV0aGluZyBoZXJlDQoNCiMgRGF0YSBTb3VyY2VzDQoNCldyaXRlIHNvbWV0aGluZyBoZXJlDQoNCiMjIFJlYWQgaW4gdGhlIGRhdGENCg0KYGBge3J9DQpkYXRhPXJlYWRSRFMoZmlsZSA9ICJGU0JfQklfU3VydmV5XzIwMTlfMjAyMS5yZHMiKQ0KYGBgDQoNCiMgRGF0YSBQcmVwcm9jZXNzaW5nDQoNCkRlc2NyaWJpbmcgZWFjaCBkYXRhIHByZXByb2Nlc3Npbmcgc3RlcCB3aXRoIHNtYWxsIGNodW5rcyBvZiBjb2RlLCBvdXRwdXQgd2hlcmUgbmVjZXNzYXJ5LCBhbmQgZG9jdW1lbnRhdGlvbg0KDQojIFRoZSByZXN0IG9mIHlvdXIgZG9jdW1lbnQNCg0KQWRkIHNlY3Rpb25zIGFuZCBzdWJzZWN0aW9ucyBhcyBuZWNlc3NhcnkgdG8gZ3VpZGUgeW91ciBhbmFseXNpcw0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNsZWFuaW5nIHRoZSBDb21iaW5lZCBCSSBBbmQgU3VydmV5IENhcmVlciBEYXRhIg0KYXV0aG9yOiAiR3JvdXAgOTogTGluaCBWdSwgTWluaCBNYWkiDQpvdXRwdXQ6DQogIGh0bWxfZG9jdW1lbnQ6DQogICAgZGF0ZTogImByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIsICVZJylgIg0KICAgIGNvZGVfZm9sZGluZzogaGlkZQ0KICAgIGRmX3ByaW50OiBwYWdlZA0KICAgIG51bWJlcl9zZWN0aW9uczogeWVzDQogICAgdGhlbWU6IGNlcnVsZWFuDQogICAgdG9jOiB5ZXMNCiAgICB0b2NfZmxvYXQ6IHllcw0KICAgIGNvZGVfZG93bmxvYWQ6IHRydWUNCiAgd29yZF9kb2N1bWVudDoNCiAgICB0b2M6IG5vDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUsbWVzc2FnZT1GQUxTRSx3YXJuaW5nPUZBTFNFKQ0KDQojcGFja2FnZSBpbml0aWFsaXphdGlvbg0Kcm0obGlzdCA9IGxzKCkpICMgY2xlYXIgZ2xvYmFsIGVudmlyb25tZW50DQpncmFwaGljcy5vZmYoKSAjIGNsb3NlIGFsbCBncmFwaGljcw0KaWYocmVxdWlyZShwYWNtYW4pPT1GQUxTRSkgaW5zdGFsbC5wYWNrYWdlcygicGFjbWFuIikNCnBhY21hbjo6cF9sb2FkKERhdGFFeHBsb3Jlcix0aWR5dmVyc2UscmVhZHhsLHpvbyxzdGFyZ2F6ZXIsa2FibGVFeHRyYSxza2ltcixwbG90bHksZ2dwdWJyLHZ0YWJsZSx0bSkNCmBgYA0KDQojIEludHJvZHVjdGlvbiBhbmQgUHVycG9zZQ0KDQpUaGlzIHByb2plY3Qgd2lsbCB1dGlsaXplIEZTQiBQbGFjZW1lbnQgRGF0YSB0byBwcm92aWRlIGluZm9ybWF0aW9uIG9uIHRoZSBtYWNybyBwbGFjZW1lbnQgYW5kIHNhbGFyeSB0cmVuZHMgb3ZlciB0aGUgcGFzdCB0aHJlZSB5ZWFycywgc3BlY2lmaWNhbGx5IHdoZXRoZXIgb3VyIHJlc3VsdHMgYXJlIGluY3JlYXNpbmcsIGRlY3JlYXNpbmcsIG9yIGJlaW5nIHN0ZWFkeSBmb3IgRlNCIGFzIGEgd2hvbGUgYW5kIGJ5IG1ham9yLg0KDQojIERhdGEgU291cmNlcw0KDQpXZSB3aWxsIGJlIHVzaW5nIHRoZSBGU0IgU3VydmV5IFJlc3VsdHMgZnJvbSAyMDE5IHRvIDIwMjEgYXMgcHJvdmlkZWQgZm9yIG91ciBkYXRhIGFuYWx5c2lzDQoNCiMjIFJlYWQgaW4gdGhlIGRhdGENCg0KYGBge3J9DQpkYXRhID0gcmVhZFJEUyhmaWxlID0gIkZTQl9CSV9TdXJ2ZXlfMjAxOV8yMDIxLnJkcyIpDQoNCmhlYWQoZGF0YSkNCmBgYA0KDQojIyMgQ2xlYW4gdGhlIFNUQVRFIGRhdGENCg0KYGBge3J9DQojIENvbnZlcnQgdG8gbG93ZXJjYXNlIGFuZCByZW1vdmUgd2hpdGUgc3BhY2VzDQpkYXRhJHN1cnZleV9zdGF0ZSA8LSB0b2xvd2VyKHRyaW13cyhkYXRhJHN1cnZleV9zdGF0ZSkpDQojIFJlbW92ZSBub24tYWxwaGFiZXRpYyBjaGFyYWN0ZXJzDQpkYXRhJHN1cnZleV9zdGF0ZSA8LSBnc3ViKCJbXmEtel0iLCAiIiwgZGF0YSRzdXJ2ZXlfc3RhdGUpDQojIFJlbW92ZSAndXNhJywgJ2FtZXJpY2EnLCAndW5pdGVkc3RhdGVzJywgJ3VzJywgJ3VuaXRlZHN0YXRlc29mYW1lcmljYScNCmRhdGEkc3VydmV5X3N0YXRlIDwtIGdzdWIoInVzYXxhbWVyaWNhfHVuaXRlZHN0YXRlc3x1c3x1bml0ZWRzdGF0ZXNvZmFtZXJpY2EiLCAiIiwgZGF0YSRzdXJ2ZXlfc3RhdGUpDQoNCiMgUmVwbGFjZSBmdWxsIHN0YXRlIG5hbWVzIHdpdGggYWJicmV2aWF0aW9ucw0Kc3RhdGVfYWJiIDwtIGMoDQogICJhbCIsICJhayIsICJheiIsICJhciIsICJjYSIsICJjbyIsICJjdCIsICJkZSIsICJmbCIsICJnYSIsICJoaSIsICJpZCIsICJpbCIsICJpbiIsICJpYSIsICJrcyIsICJreSIsIA0KICAibGEiLCAibWUiLCAibWQiLCAibWEiLCAibWkiLCAibW4iLCAibXMiLCAibW8iLCAibXQiLCAibmUiLCAibnYiLCAibmgiLCAibmoiLCAibm0iLCAibnkiLCAibmMiLCAibmQiLCANCiAgIm9oIiwgIm9rIiwgIm9yIiwgInBhIiwgInJpIiwgInNjIiwgInNkIiwgInRuIiwgInR4IiwgInV0IiwgInZ0IiwgInZhIiwgIndhIiwgInd2IiwgIndpIiwgInd5IiwgImRjIg0KKQ0Kc3RhdGVfZnVsbCA8LSBjKA0KICAiYWxhYmFtYSIsICJhbGFza2EiLCAiYXJpem9uYSIsICJhcmthbnNhcyIsICJjYWxpZm9ybmlhIiwgDQogICJjb2xvcmFkbyIsICJjb25uZWN0aWN1dCIsICJkZWxhd2FyZSIsICJmbG9yaWRhIiwgImdlb3JnaWEiLCANCiAgImhhd2FpaSIsICJpZGFobyIsICJpbGxpbm9pcyIsICJpbmRpYW5hIiwgImlvd2EiLCAia2Fuc2FzIiwgDQogICJrZW50dWNreSIsICJsb3Vpc2lhbmEiLCAibWFpbmUiLCAibWFyeWxhbmQiLCAibWFzc2FjaHVzZXR0cyIsIA0KICAibWljaGlnYW4iLCAibWlubmVzb3RhIiwgIm1pc3Npc3NpcHBpIiwgIm1pc3NvdXJpIiwgIm1vbnRhbmEiLCANCiAgIm5lYnJhc2thIiwgIm5ldmFkYSIsICJuZXdoYW1wc2hpcmUiLCAibmV3amVyc2V5IiwgIm5ld21leGljbyIsIA0KICAibmV3eW9yayIsICJub3J0aGNhcm9saW5hIiwgIm5vcnRoZGFrb3RhIiwgIm9oaW8iLCAib2tsYWhvbWEiLCANCiAgIm9yZWdvbiIsICJwZW5uc3lsdmFuaWEiLCAicmhvZGVpc2xhbmQiLCAic291dGhjYXJvbGluYSIsIA0KICAic291dGhkYWtvdGEiLCAidGVubmVzc2VlIiwgInRleGFzIiwgInV0YWgiLCAidmVybW9udCIsIA0KICAidmlyZ2luaWEiLCAid2FzaGluZ3RvbiIsICJ3ZXN0dmlyZ2luaWEiLCAid2lzY29uc2luIiwgInd5b21pbmciLCANCiAgImRpc3RyaWN0b2Zjb2x1bWJpYSINCikNCg0KIyBDcmVhdGUgYSBtYXBwaW5nIGRpY3Rpb25hcnkNCnN0YXRlX21hcHBpbmcgPC0gc2V0TmFtZXMoc3RhdGVfYWJiLCBzdGF0ZV9mdWxsKQ0KDQojIE1hcCBzdGF0ZSBuYW1lcyB1c2luZyB0aGUgbWFwcGluZyBkaWN0aW9uYXJ5IGFuZCBjb252ZXJ0IHRvIHVwcGVyY2FzZQ0KZGF0YSRzdXJ2ZXlfc3RhdGUgPC0gaWZlbHNlKGRhdGEkc3VydmV5X3N0YXRlICVpbiUgc3RhdGVfZnVsbCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0ZV9tYXBwaW5nW2RhdGEkc3VydmV5X3N0YXRlXSwgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSRzdXJ2ZXlfc3RhdGUpDQoNCiMgQ29udmVydCB0byB1cHBlcmNhc2UNCmRhdGEkc3VydmV5X3N0YXRlIDwtIHRvdXBwZXIoZGF0YSRzdXJ2ZXlfc3RhdGUpDQoNCiMgQWRkaW5nIGZ1amlhbnByb3ZpbmNlIGFuZCB6aGVqaWFuZyBwcm92aW5jZSB0byBjaGluYQ0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIkZVSklBTlBST1ZJTkNFIiB8IGRhdGEkc3VydmV5X3N0YXRlID09ICJaSEVKSUFOR1BST1ZJTkNFIl0gPC0gIkNISU5BIg0KDQojIFN0YW5kYXJkaXppbmcgZmllbGRzIHdpdGggbWlzc3BlbGxzIG9yIGFsdGVybmF0aXZlIG5hbWVzDQpkYXRhJHN1cnZleV9zdGF0ZVtkYXRhJHN1cnZleV9zdGF0ZSA9PSAiTUlDSElHQU5ERVRST0lUIl0gPC0gIk1JIg0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIldBU0hJTkdUT05EQyJdIDwtICJXQSINCmRhdGEkc3VydmV5X3N0YXRlW2RhdGEkc3VydmV5X3N0YXRlID09ICJPSElPVEhFIl0gPC0gIk9IIg0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIk1BU1NBQ0hFVFRTIl0gPC0gIk1BIg0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIlZJUkdJTklBVkEiXSA8LSAiVkEiDQoNCiMgUmVwbGFjaW5nIGJsYW5rcywgbmEgYW5kIG1pc2NlbGxhbmVvdXMgdmFsdWVzIHdpdGggIk5PVCBBVkFJTEFCTEUiDQpkYXRhJHN1cnZleV9zdGF0ZVtpcy5uYShkYXRhJHN1cnZleV9zdGF0ZSldIDwtICJOT1QgQVZBSUxBQkxFIg0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIiJdIDwtICJOT1QgQVZBSUxBQkxFIg0KZGF0YSRzdXJ2ZXlfc3RhdGVbZGF0YSRzdXJ2ZXlfc3RhdGUgPT0gIlRCQSIgfCBkYXRhJHN1cnZleV9zdGF0ZSA9PSAiVEJEIl0gPC0gIk5PVCBBVkFJTEFCTEUiDQpgYGANCg0KIyMjIENsZWFuIHRoZSBzdXJ2ZXlfY29tcGFueSBmaWVsZA0KYGBge3J9DQojIFJlcGxhY2luZyBjb21wYW55IG5hbWVzIHRoYXQgaGF2ZSBKUCBNb3JnYW4gb3Igc29tZSB2YXJpYXRpb25zIHdpdGggSlAgTW9yZ2FuIENoYXNlDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkpQIE1vcmdhbiIgfCBkYXRhJHN1cnZleV9jb21wYW55ID09ICJKLlAgTW9yZ2FuIiB8IGRhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkouUC4gTW9yZ2FuIiB8IGRhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkouUC4gTW9yZ2FuIFUuUy4gUHJpdmF0ZSBCYW5rIiB8IGRhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkpQIE1vcmdhbiBhbmQgQ2hhc2UiICBdIDwtICJKUCBNb3JnYW4gQ2hhc2UiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkpQTW9yZ2FuIENoYXNlICYgQ28uIl0gPC0gIkpQIE1vcmdhbiBDaGFzZSIgDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkpQTW9yZ2FuIENoYXNlIl0gPC0gIkpQIE1vcmdhbiBDaGFzZSIgDQoNCiMgUmVwbGFjaW5nIGNvbXBhbnkgbmFtZXMgd2l0aCBhbHRlcm5hdGl2ZSBzcGVsbGluZyBuYW1lIGZvciBFWQ0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJFcm5zdCAmIFlvdW5nIl0gPC0gIkVZIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJFcm5zdCBhbmQgWW91bmciXSA8LSAiRVkiDQoNCiMgUmVwbGFjaW5nIGNvbXBhbnkgbmFtZXMgd2l0aCBhbHRlcm5hdGl2ZSBzcGVsbGluZyBuYW1lIGZvciBUZXh0cm9uDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIlRleHRyb24gQXZpYXRpb24iXSA8LSAiVGV4dHJvbiINCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiVGV4dHJvbiBTeXN0ZW1zIl0gPC0gIlRleHRyb24iDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIlRleHRyb24gU3BlY2lhbGl6ZWQgVmVoaWNsZXMiXSA8LSAiVGV4dHJvbiINCg0KIyBSZXBsYWNpbmcgY29tcGFueSBuYW1lcyB3aXRoIGFsdGVybmF0aXZlIHNwZWxsaW5nIG5hbWUgZm9yIENveW90ZSBMb2dpc3RpY3MNCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiQ295b3RlTG9naXNpdGNzIl0gPC0gIkNveW90ZSBMb2dpc2l0Y3MiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkNveW90ZSJdIDwtICJDb3lvdGUgTG9naXNpdGNzIg0KDQojIFJlcGxhY2luZyBjb21wYW55IG5hbWVzIHdpdGggYWx0ZXJuYXRpdmUgc3BlbGxpbmcgbmFtZSBmb3IgRGVsb2l0dGUNCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiRGVsb2l0dGUgQ29uc3VsdGluZyJdIDwtICJEZWxvaXR0ZSINCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiRGVsb2l0dGUgTExQIl0JPC0gIkRlbG9pdHRlIgkJDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkRlbG9pdHRlIFRheCJdCTwtICJEZWxvaXR0ZSIJCQ0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJEZWxvaXR0ZSwgQ2hpbmEiXSA8LSAiRGVsb2l0dGUiDQoNCiMgUmVwbGFjaW5nIGNvbXBhbnkgbmFtZXMgd2l0aCBhbHRlcm5hdGl2ZSBzcGVsbGluZyBuYW1lIGZvciBQTkMNCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiUE5DIEJhbmsiXSA8LSAiUE5DIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJQTkMgRmluYW5jaWFsIFNlcnZpY2VzIl0gPC0gIlBOQyINCg0KIyBSZXBsYWNpbmcgY29tcGFueSBuYW1lcyB3aXRoIGFsdGVybmF0aXZlIHNwZWxsaW5nIG5hbWUgZm9yIEdyYWluZ2VyDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIldXIEdyYWluZ2VyIl0gPC0gIlcuVy4gR3JhaW5nZXIiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkdyYWluZ2VyIl0gPC0gIlcuVy4gR3JhaW5nZXIiDQoNCiMgUmVwbGFjaW5nIGNvbXBhbnkgbmFtZXMgd2l0aCBhbHRlcm5hdGl2ZSBzcGVsbGluZyBuYW1lIGZvciBPcmFjbGUNCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiT3JhY2xlIE5ldHN1aXRlIl0gPC0gIk9yYWNsZSINCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiT3JhY2xlIE5ldFN1aXRlIl0gPC0gIk9yYWNsZSINCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiT3JhY2xlIC0gTmV0c3VpdGUiXSA8LSAiT3JhY2xlIg0KDQojIFJlcGxhY2luZyBvdGhlciBjb21wYW55IG5hbWVzIHdpdGggYWx0ZXJuYXRpdmUgc3BlbGxpbmcgbmFtZSANCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAgIlBXQyJdIDwtICJQd0MiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkJyb3duIEdpYmJvbnMgTGFuZyAmIENvLiJdIDwtICJCcm93biBHaWJib25zIExhbmcgJiBDb21wYW55Ig0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJBYmVyY3JvbWJpZSAmIEZpdGNoIl0gPC0gIkFiZXJjcm9tYmllIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJUaGUgQ2luY2lubmF0aSBJbnN1cmFuY2UgQ29tcGFueSJdIDwtICJUaGUgQ2luY2lubmF0aSBJbnN1cmFuY2UgQ29tcGFuaWVzIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJDaW5jaW5uYXRpIEluc3VyYW5jZSJdIDwtICJUaGUgQ2luY2lubmF0aSBJbnN1cmFuY2UgQ29tcGFuaWVzIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJDaW5jaW5uYXRpIEluc3VyYW5jZSBDb21wYW55Il0gPC0gIlRoZSBDaW5jaW5uYXRpIEluc3VyYW5jZSBDb21wYW5pZXMiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIlRlcmlsbGl1bSJdIDwtICJUZXJyaWxpdW0iDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIjg0LjUxIl0gPC0gIjg0LjUxwroiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIkFiYm90dCBOdXRyaXRpb24iXSA8LSAiQWJib3R0Ig0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJDSUJDIFVTIl0gPC0gIkNJQkMiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIk9wcGVuaGVpbWVyICYgQ28uIEluYy4iXSA8LSAiT3BwZW5oZWltZXIgJiBDbyBJbmMuIg0KDQojIFJlcGxhY2luZyBibGFua3MsIG5hIGFuZCBtaXNjZWxsYW5lb3VzIHZhbHVlcyB3aXRoICJOT1QgQVZBSUxBQkxFIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtpcy5uYShkYXRhJHN1cnZleV9jb21wYW55KV0gPC0gIk5PVCBBVkFJTEFCTEUiDQpkYXRhJHN1cnZleV9jb21wYW55W2RhdGEkc3VydmV5X2NvbXBhbnkgPT0gIiJdIDwtICJOT1QgQVZBSUxBQkxFIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJuYSJdIDwtICJOT1QgQVZBSUxBQkxFIg0KZGF0YSRzdXJ2ZXlfY29tcGFueVtkYXRhJHN1cnZleV9jb21wYW55ID09ICJOL0EiXSA8LSAiTk9UIEFWQUlMQUJMRSINCmRhdGEkc3VydmV5X2NvbXBhbnlbZGF0YSRzdXJ2ZXlfY29tcGFueSA9PSAiTm90IFlldCJdIDwtICJOT1QgQVZBSUxBQkxFIg0KDQojIE1ha2luZyBhbGwgbGV0dGVycyBjYXBpdGFsIGluIGEgc3RyaW5nDQpkYXRhJHN1cnZleV9jb21wYW55IDwtIHN0cl90b191cHBlcihkYXRhJHN1cnZleV9jb21wYW55KQ0KYGBgDQoNClRoaXMgcG9ydGlvbiBvZiB0aGUgY29kZSBpcyBjbGVhbmluZyB0aGUgc3VydmV5X2NvbXBhbnkgc2VjdGlvbiBvZiB0aGUgZGF0YS4gVGhlcmUgYXJlIG1hbnkgY29tcGFueSBuYW1lcyB0aGF0IGFyZSBtaXNzcGVsbGVkIG9yIGhhdmUgYWRkaXRpb25hbCBzeW1ib2xzIGluIHRoZWlyIG5hbWVzLCBzbyB3ZSBhcmUgdHJ5aW5nIHRvIG5vcm1hbGl6ZSBhbGwgdGhlIGRpZmZlcmVudCBuYW1lcyB1bmRlciB0aGUgb25lIG1vc3QgZnJlcXVlbnRseSBvYnNlcnZlZC4gQWRkaXRpb25hbGx5LCB3ZSBhbHNvIHJlcGxhY2VkIG5hIGFuZCBibGFuayB2YWx1ZXMgd2l0aCAiTk9UIEFWQUlMQUJMRSIuDQoNCiMgT3VyIENvbXB1dGluZyBFbnZpcm9ubWVudA0KDQpPdXIgUlN0dWRpbyBWZXJzaW9uOiANCg0KUlN0dWRpbyAyMDIzLjA5LjArNDYzICJEZXNlcnQgU3VuZmxvd2VyIiBSZWxlYXNlIChiNTFjODFjYzMwM2Q0YjUyYjAxMDc2N2U1YjMwNDM4YmViOTA0NjQxLCAyMDIzLTA5LTI1KSBmb3Igd2luZG93cw0KTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgUlN0dWRpby8yMDIzLjA5LjArNDYzIENocm9tZS8xMTQuMC41NzM1LjI4OSBFbGVjdHJvbi8yNS41LjAgU2FmYXJpLzUzNy4zNg0KDQpBZGRpdGlvbmFsbHksIHdlIGFyZSB1c2luZyB0aGUgcGFja2FnZXMgRGF0YUV4cGxvcmVyLHRpZHl2ZXJzZSxyZWFkeGwsem9vLHN0YXJnYXplcixrYWJsZUV4dHJhLHNraW1yLHBsb3RseSxnZ3B1YnIsdnRhYmxlIGFuZCB0bS4NCg0KIyBEYXRhIFByZXByb2Nlc3NpbmcNCg0KRGVzY3JpYmluZyBlYWNoIGRhdGEgcHJlcHJvY2Vzc2luZyBzdGVwIHdpdGggc21hbGwgY2h1bmtzIG9mIGNvZGUsIG91dHB1dCB3aGVyZSBuZWNlc3NhcnksIGFuZCBkb2N1bWVudGF0aW9uDQoNCiMgVGhlIHJlc3Qgb2YgeW91ciBkb2N1bWVudA0KDQpBZGQgc2VjdGlvbnMgYW5kIHN1YnNlY3Rpb25zIGFzIG5lY2Vzc2FyeSB0byBndWlkZSB5b3VyIGFuYWx5c2lzDQoNCg==</div>
 
 
 </div>
