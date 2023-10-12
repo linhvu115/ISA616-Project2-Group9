@@ -35,7 +35,7 @@ Our client for this analysis is Mr. Kirk Bogard, Associate Vice President for De
 
 ## Business Value Proposition
 
-![Business Value Proposition Group 9](BVP.png)
+![](BVP.png)
 
 The Business Value Proposition (BVP) image above highlights the key value that our analysis will deliver to our client and contribute to the informed decision-making process regarding placements and salaries.
 
@@ -57,24 +57,15 @@ head(data)
 skim(data)
 ```
 
-## EDA using DataExplorer Package
-
-```{r}
-introduce(data)
-plot_intro(data)
-plot_missing(data)
-
-# Distributions
-plot_bar(data)
-plot_histogram(data)
-
-# Correlations
-plot_correlation(data)
-```
-
 ### Data Cleaning
 
 ### Clean the STATE data
+
+Before cleaning:
+
+```{r}
+head(unique(data$survey_state), 20)
+```
 
 ```{r}
 # Convert to lowercase and remove white spaces
@@ -133,7 +124,19 @@ data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "N
 
 The data cleaning process for the survey_state data involves standardizing and preparing state names for analysis. Initially, all state names are converted to lowercase and any leading or trailing whitespaces are removed. Non-alphabetic characters and common variations of "USA" and "America" are removed. Full state names are replaced with their respective abbreviations using a mapping dictionary, ensuring consistency. The names are then converted to uppercase for uniformity. State names related to China are grouped appropriately. Misspelled or alternative state names are standardized. Blank, NA, and miscellaneous values are replaced with "NOT AVAILABLE" to indicate missing or invalid entries. This thorough cleaning ensures the state data is consistent and ready for further analysis or visualization.
 
+After cleaning:
+
+```{r}
+unique(data$survey_state)
+```
+
 ### Clean the survey_company field
+
+Before cleaning:
+
+```{r}
+head(unique(data$survey_company), 20)
+```
 
 ```{r}
 # Replacing company names that have JP Morgan or some variations with JP Morgan Chase
@@ -199,13 +202,16 @@ data$survey_company <- str_to_upper(data$survey_company)
 
 This portion of the code is cleaning the survey_company section of the data. There are many company names that are misspelled or have additional symbols in their names, so we are trying to normalize all the different names under the one most frequently observed. Additionally, we also replaced na and blank values with "NOT AVAILABLE".
 
+After cleaning:
+
+```{r}
+head(unique(data$survey_company), 20)
+```
+
 # Our Computing Environment
 
-Our RStudio Version: 
+Our RStudio Version:
 
-RStudio 2023.09.0+463 "Desert Sunflower" Release (b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36
+RStudio 2023.09.0+463 "Desert Sunflower" Release (b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36
 
 Additionally, we are using the packages DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable and tm.
-
-
