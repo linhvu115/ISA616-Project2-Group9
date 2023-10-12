@@ -98,6 +98,68 @@ data$survey_state[data$survey_state == ""] <- "NOT AVAILABLE"
 data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "NOT AVAILABLE"
 ```
 
+### Clean the survey_company field
+```{r}
+# Replacing company names that have JP Morgan or some variations with JP Morgan Chase
+data$survey_company[data$survey_company == "JP Morgan" | data$survey_company == "J.P Morgan" | data$survey_company == "J.P. Morgan" | data$survey_company == "J.P. Morgan U.S. Private Bank" | data$survey_company == "JP Morgan and Chase"  ] <- "JP Morgan Chase"
+data$survey_company[data$survey_company == "JPMorgan Chase & Co."] <- "JP Morgan Chase" 
+data$survey_company[data$survey_company == "JPMorgan Chase"] <- "JP Morgan Chase" 
+
+# Replacing company names with alternative spelling name for EY
+data$survey_company[data$survey_company == "Ernst & Young"] <- "EY"
+data$survey_company[data$survey_company == "Ernst and Young"] <- "EY"
+
+# Replacing company names with alternative spelling name for Textron
+data$survey_company[data$survey_company == "Textron Aviation"] <- "Textron"
+data$survey_company[data$survey_company == "Textron Systems"] <- "Textron"
+data$survey_company[data$survey_company == "Textron Specialized Vehicles"] <- "Textron"
+
+# Replacing company names with alternative spelling name for Coyote Logistics
+data$survey_company[data$survey_company == "CoyoteLogisitcs"] <- "Coyote Logisitcs"
+data$survey_company[data$survey_company == "Coyote"] <- "Coyote Logisitcs"
+
+# Replacing company names with alternative spelling name for Deloitte
+data$survey_company[data$survey_company == "Deloitte Consulting"] <- "Deloitte"
+data$survey_company[data$survey_company == "Deloitte LLP"]	<- "Deloitte"		
+data$survey_company[data$survey_company == "Deloitte Tax"]	<- "Deloitte"		
+data$survey_company[data$survey_company == "Deloitte, China"] <- "Deloitte"
+
+# Replacing company names with alternative spelling name for PNC
+data$survey_company[data$survey_company == "PNC Bank"] <- "PNC"
+data$survey_company[data$survey_company == "PNC Financial Services"] <- "PNC"
+
+# Replacing company names with alternative spelling name for Grainger
+data$survey_company[data$survey_company == "WW Grainger"] <- "W.W. Grainger"
+data$survey_company[data$survey_company == "Grainger"] <- "W.W. Grainger"
+
+# Replacing company names with alternative spelling name for Oracle
+data$survey_company[data$survey_company == "Oracle Netsuite"] <- "Oracle"
+data$survey_company[data$survey_company == "Oracle NetSuite"] <- "Oracle"
+data$survey_company[data$survey_company == "Oracle - Netsuite"] <- "Oracle"
+
+# Replacing other company names with alternative spelling name 
+data$survey_company[data$survey_company ==  "PWC"] <- "PwC"
+data$survey_company[data$survey_company == "Brown Gibbons Lang & Co."] <- "Brown Gibbons Lang & Company"
+data$survey_company[data$survey_company == "Abercrombie & Fitch"] <- "Abercrombie"
+data$survey_company[data$survey_company == "The Cincinnati Insurance Company"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Cincinnati Insurance"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Cincinnati Insurance Company"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Terillium"] <- "Terrilium"
+data$survey_company[data$survey_company == "84.51"] <- "84.51º"
+data$survey_company[data$survey_company == "Abbott Nutrition"] <- "Abbott"
+data$survey_company[data$survey_company == "CIBC US"] <- "CIBC"
+data$survey_company[data$survey_company == "Oppenheimer & Co. Inc."] <- "Oppenheimer & Co Inc."
+
+# Replacing blanks, na and miscellaneous values with "NOT AVAILABLE"
+data$survey_company[is.na(data$survey_company)] <- "NOT AVAILABLE"
+data$survey_company[data$survey_company == ""] <- "NOT AVAILABLE"
+data$survey_company[data$survey_company == "na"] <- "NOT AVAILABLE"
+data$survey_company[data$survey_company == "N/A"] <- "NOT AVAILABLE"
+data$survey_company[data$survey_company == "Not Yet"] <- "NOT AVAILABLE"
+
+# Making all letters capital in a string
+data$survey_company <- str_to_upper(data$survey_company)
+```
 # Data Preprocessing
 
 Describing each data preprocessing step with small chunks of code, output where necessary, and documentation
