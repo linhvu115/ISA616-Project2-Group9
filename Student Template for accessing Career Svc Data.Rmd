@@ -208,6 +208,11 @@ After cleaning:
 head(unique(data$survey_company), 20)
 ```
 
+## Exporting the cleaned data file
+
+```{r}
+saveRDS(data, file = "cleaned_FSB_survey_data.RDS")
+```
 # Our Computing Environment
 
 Our RStudio Version:

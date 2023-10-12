@@ -1,0 +1,108 @@
+---
+title: "FSB Survey Data Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+#runtime: shiny
+---
+
+```{r setup, include=FALSE,echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE)
+
+#package intialization
+if(require(pacman)==FALSE) install.packages("pacman")
+pacman::p_load(tidyverse, #for data manipulation
+               plotly, #for interactive plots
+               flexdashboard, #to make a dashboard
+               fontawesome, #for icons
+               DT #for better tables
+               )
+
+#read in data
+data = readRDS("cleaned_FSB_survey_data.RDS")
+```
+
+# Survey Overview {data-orientation=columns}
+
+Overview of survey responses
+  
+## row {data-width=300}
+
+### Response Rate
+
+```{r, echo = FALSE}
+
+```
+
+### Usable Responses
+
+```{r,echo=FALSE}
+
+```   
+ 
+### Class Rank
+    
+```{r,echo=FALSE}
+
+```
+
+
+## row {data-height=600}
+
+### Internship Breakdown
+
+```{r,echo=FALSE}
+
+```
+
+
+### Responses by Primary Major
+    
+```{r,echo=FALSE}
+
+```
+   
+# Internships by Majors {data-orientation=columns}
+
+## Column {data-width=400}
+
+### Internship Status by Major
+
+```{r,echo=FALSE}
+
+```
+
+### Internship Status by Career Fair Attendance
+
+```{r,echo=FALSE}
+
+```
+
+
+## Column {data-width=600}
+
+### Internship Status by Career Fair Attendance-All Majors
+
+```{r,echo=FALSE}
+
+```
+
+
+# Firms that Hire Interns {data-orientation=columns}
+
+## Column {data-width=500}
+
+### Employers Hiring Paid Interns by Major
+
+```{r,echo=FALSE}
+
+```
+
+## Column {data-width=500}
+
+### Add Another Chart Here
+
+```{r}
+
+```
+
