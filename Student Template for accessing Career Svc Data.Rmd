@@ -29,9 +29,19 @@ pacman::p_load(DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plot
 
 This project will utilize FSB Placement Data to provide information on the macro placement and salary trends over the past three years, specifically whether our results are increasing, decreasing, or being steady for FSB as a whole and by major.
 
-# Data Sources
+## Client Description
 
-We will be using the FSB Survey Results from 2019 to 2021 as provided for our data analysis
+Our client for this analysis is Mr. Kirk Bogard, Associate Vice President for Development and External Relations in FSB.
+
+## Business Value Proposition
+
+![Business Value Proposition Group 9](BVP.png)
+
+The Business Value Proposition (BVP) image above highlights the key value that our analysis will deliver to our client and contribute to the informed decision-making process regarding placements and salaries.
+
+# Data Sources and Data Preprocessing
+
+We will be using the FSB Survey Results from 2019 to 2021 as provided for our data analysis. The data preprocessing steps involve cleaning and standardizing the provided survey data to ensure consistency and accuracy in our analysis. The resulting dataset will be ready for comprehensive analysis.
 
 ## Read in the data
 
@@ -40,6 +50,29 @@ data = readRDS(file = "FSB_BI_Survey_2019_2021.rds")
 
 head(data)
 ```
+
+## Overall Data Profile
+
+```{r}
+skim(data)
+```
+
+## EDA using DataExplorer Package
+
+```{r}
+introduce(data)
+plot_intro(data)
+plot_missing(data)
+
+# Distributions
+plot_bar(data)
+plot_histogram(data)
+
+# Correlations
+plot_correlation(data)
+```
+
+### Data Cleaning
 
 ### Clean the STATE data
 
@@ -97,6 +130,8 @@ data$survey_state[is.na(data$survey_state)] <- "NOT AVAILABLE"
 data$survey_state[data$survey_state == ""] <- "NOT AVAILABLE"
 data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "NOT AVAILABLE"
 ```
+
+The data cleaning process for the survey_state data involves standardizing and preparing state names for analysis. Initially, all state names are converted to lowercase and any leading or trailing whitespaces are removed. Non-alphabetic characters and common variations of "USA" and "America" are removed. Full state names are replaced with their respective abbreviations using a mapping dictionary, ensuring consistency. The names are then converted to uppercase for uniformity. State names related to China are grouped appropriately. Misspelled or alternative state names are standardized. Blank, NA, and miscellaneous values are replaced with "NOT AVAILABLE" to indicate missing or invalid entries. This thorough cleaning ensures the state data is consistent and ready for further analysis or visualization.
 
 ### Clean the survey_company field
 
@@ -173,11 +208,4 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 Additionally, we are using the packages DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable and tm.
 
-# Data Preprocessing
-
-Describing each data preprocessing step with small chunks of code, output where necessary, and documentation
-
-# The rest of your document
-
-Add sections and subsections as necessary to guide your analysis
 
