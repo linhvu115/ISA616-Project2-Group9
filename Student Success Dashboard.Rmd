@@ -22,57 +22,37 @@ pacman::p_load(tidyverse, #for data manipulation
 data = readRDS("cleaned_FSB_survey_data.RDS")
 ```
 
-# Survey Overview {data-orientation=columns}
+# General Overview {data-orientation=columns}
 
-Overview of survey responses
+An overall summary of our project
   
-## row {data-width=300}
+## row {data-width=600}
 
-### Response Rate
+### The Question We Want to Answer
 
 ```{r, echo = FALSE}
 
 ```
 
-### Usable Responses
-
-```{r,echo=FALSE}
-
-```   
- 
-### Class Rank
-    
-```{r,echo=FALSE}
-
-```
-
-
 ## row {data-height=600}
 
-### Internship Breakdown
+### Additional Insights
 
 ```{r,echo=FALSE}
 
 ```
 
-
-### Responses by Primary Major
-    
-```{r,echo=FALSE}
-
-```
-   
-# Internships by Majors {data-orientation=columns}
+# Page 2 {data-orientation=columns}
 
 ## Column {data-width=400}
 
-### Internship Status by Major
+### Chart Name
 
 ```{r,echo=FALSE}
 
 ```
 
-### Internship Status by Career Fair Attendance
+### Chart Name
 
 ```{r,echo=FALSE}
 
@@ -81,18 +61,18 @@ Overview of survey responses
 
 ## Column {data-width=600}
 
-### Internship Status by Career Fair Attendance-All Majors
+### Chart Name
 
 ```{r,echo=FALSE}
 
 ```
 
 
-# Firms that Hire Interns {data-orientation=columns}
+# Page 3 {data-orientation=columns}
 
 ## Column {data-width=500}
 
-### Employers Hiring Paid Interns by Major
+### Chart Name
 
 ```{r,echo=FALSE}
 
