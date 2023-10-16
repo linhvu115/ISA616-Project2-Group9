@@ -30,9 +30,11 @@ An overall summary of our project
 
 ### The Question We Want to Answer
 
-```{r, echo = FALSE}
+We want to know more about the macro placement and salary trends of Farmer School of Business Students by year and major. We are interested in seeing whether there are any common patterns that can be spotted from 2019 to 2021 in the dataset.
 
-```
+We have created two pages in our dashboard, each with insights into student placement information by year and major. These can be accessed through clicking on each tab.
+
+Through this, we would be able to derive more insights into which year and major we should place more investment in respectively. This would allow us to devise a more effective management method for the growth and advancement of the Farmer School.
 
 ## row {data-height=600}
 
@@ -42,17 +44,17 @@ An overall summary of our project
 
 ```
 
-# Page 2 {data-orientation=columns}
+# Placement by Year {data-orientation=columns}
 
 ## Column {data-width=400}
 
-### Chart Name
+### Chart 1
 
 ```{r,echo=FALSE}
 
 ```
 
-### Chart Name
+### Chart 2
 
 ```{r,echo=FALSE}
 
@@ -61,28 +63,35 @@ An overall summary of our project
 
 ## Column {data-width=600}
 
-### Chart Name
+### Chart 3
 
 ```{r,echo=FALSE}
 
 ```
 
 
-# Page 3 {data-orientation=columns}
+# Placement by Major {data-orientation=columns}
 
-## Column {data-width=500}
+## Column {data-width=400}
 
-### Chart Name
+### Chart 1
 
 ```{r,echo=FALSE}
 
 ```
 
-## Column {data-width=500}
+### Chart 2
 
-### Add Another Chart Here
+```{r,echo=FALSE}
 
-```{r}
+```
+
+
+## Column {data-width=600}
+
+### Chart 3
+
+```{r,echo=FALSE}
 
 ```
 
