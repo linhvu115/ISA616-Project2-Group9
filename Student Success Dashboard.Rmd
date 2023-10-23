@@ -15,7 +15,8 @@ pacman::p_load(tidyverse, #for data manipulation
                plotly, #for interactive plots
                flexdashboard, #to make a dashboard
                fontawesome, #for icons
-               DT #for better tables
+               DT, #for better tables
+               scales #for displaying numbers in currency format
                )
 
 #read in data
@@ -112,24 +113,68 @@ ggplotly(n)
 
 ## Column {data-width=400}
 
-### Chart 1
+### Data Table of Placement by Major
 
 ```{r,echo=FALSE}
+data2 = data %>%
+  group_by(major1) %>%
+  summarize(
+    student_count = n(),
+    avg_salary = dollar(mean(survey_salary, na.rm = TRUE))
+  ) %>%
+  arrange(major1)
 
+datatable(data2, rownames = F, extensions = 'Buttons',
+          options = list(dom = 'Bfrtip',
+                         buttons = c('copy','csv','excel')
+                         ))
 ```
 
-### Chart 2
+### Changes in Salary from 2019-2021 by Top 5 Major with Highest Average Salary
 
 ```{r,echo=FALSE}
+# Select the top 5 majors with the highest average salary
+major_5 <- data %>%
+  group_by(major1) %>%
+  summarize(Average_Salary = mean(survey_salary, na.rm = TRUE)) %>%
+  top_n(5, Average_Salary) %>%
+  pull(major1)
 
+salary_5_changes <- data %>%
+  group_by(major1, year.x) %>%
+  summarize(Average_Salary = mean(survey_salary, na.rm = TRUE)) %>%
+  filter(major1 %in% major_5)
+
+# Create a line plot to visualize changes in salary by major from 2019 to 2021
+p = ggplot(salary_5_changes, aes(x = year.x, y = Average_Salary, group = major1, color = major1)) +
+  geom_line() +
+  geom_point(size = 2) +
+  labs(x = "Year",
+       y = "Average Salary ($)",
+       caption = "Data Source: FSB Survey Data") +
+  theme_minimal()
+
+ggplotly(p)
 ```
 
 
 ## Column {data-width=600}
 
-### Chart 3
+### Average Salary by Majors
 
 ```{r,echo=FALSE}
+p = data %>%
+  group_by(major1) %>%
+  summarize(avg_salary = mean(survey_salary, na.rm = TRUE)) %>%
+  filter(!is.na(avg_salary) & avg_salary > 0) %>%
+  arrange(desc(avg_salary)) %>%
+  ggplot(aes(x = avg_salary, y = reorder(major1, -avg_salary))) +
+  geom_bar(stat = "identity", fill = "dodgerblue3") +
+  labs(x = "Average Salary ($)",
+       y = "Major",
+       caption = "Data Source: FSB Survey Data") +
+  theme_minimal()
 
+ggplotly(p)
 ```
 
