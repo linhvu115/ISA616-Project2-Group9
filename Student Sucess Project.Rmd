@@ -1,0 +1,420 @@
+---
+title: "ISA616 Project 2: FSB Placement Data Insights"
+author: "Group 9: Linh Vu, Minh Mai"
+output:
+  html_document:
+    date: "`r format(Sys.time(), '%d %B, %Y')`"
+    code_folding: hide
+    df_print: paged
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    code_download: true
+  word_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE)
+
+# package initialization
+rm(list = ls()) # clear global environment
+graphics.off() # close all graphics
+if(require(pacman)==FALSE) install.packages("pacman")
+pacman::p_load(DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable,tm)
+```
+
+# Introduction and Purpose
+
+This project will utilize FSB Placement Data to provide information on the macro placement and salary trends over the past three years, specifically whether our results are increasing, decreasing, or being steady for FSB as a whole and by major.
+
+## Client Description
+
+Our client for this analysis is Mr. Kirk Bogard, Associate Vice President for Development and External Relations in FSB.
+
+## Business Value Proposition
+
+The Business Value Proposition (BVP) below highlights the key value that our analysis will deliver to our client and contribute to the informed decision-making process regarding placements and salaries.
+
+![](BVP.png)
+
+# Data Sources and Data Preprocessing
+
+We will be using the FSB Survey Results from 2019 to 2021 as provided for our data analysis. The data preprocessing steps involve cleaning and standardizing the provided survey data to ensure consistency and accuracy in our analysis. The resulting dataset will be ready for comprehensive analysis.
+
+## Read in the data
+
+```{r}
+data = readRDS(file = "FSB_BI_Survey_2019_2021.rds")
+head(data)
+```
+
+## Overall Data Profile {.tabset}
+
+The original dataset has 42 variables and 3235 observations with a comprehensive record of Farmer School of Business (FSB) students and their post-graduation experiences. It is important to note that the dataset contains some missing information which requires careful data preparation for subsequent analysis.
+
+### Data Summary {.unnumbered}
+
+```{r}
+s <- skim(data)
+summary(s)
+```
+
+### Character variables {.unnumbered}
+
+```{r}
+s %>% yank("character")
+```
+
+### Factor variables {.unnumbered}
+
+```{r}
+s %>% yank("factor")
+```
+
+### Numeric variables {.unnumbered}
+
+```{r}
+s %>% yank("numeric")
+```
+
+## Data Cleaning
+
+```{r}
+data <- data[,c(1,2,3,19,20,21,22,23,25,28,30,31,34,37,41,42)]
+```
+
+To conduct a meaningful analysis for your project, we select relevant variables from the dataset:
+
+1.  `nmajor`: numeric,derived, the number of majors
+2.  `major1`: text, OBIEE, first major
+3.  `major2`: text, OBIEE, second major
+4.  `minor1`: text, OBIEE, first listed minor
+5.  `minor2`: text, OBIEE, second listed minor
+6.  `IPEDS.Race.Ethnicity`: text, OBIEE, race/ethnicity
+7.  `Gender`: text, OBIEE, sex
+8.  `GPA.Range`: text, OBIEE, GPA within a .5 range
+9.  `year.x`: text, derived, first four digits of Term.Code stored as a character variable
+10. `survey_company`: text, survey, student reported company in which they accepted a job
+11. `survey_gradprogram`: text, survey, student reported graduate program they will be attending
+12. `survey_gradschool`: text, survey, stuent reported graduate school they will be attending
+13. `survey_internships`: text, survey, Student reported number of internships they held during college
+14. `survey_offers`: text, survey, student reported number of offers for full time employment received
+15. `survey_salary`: numeric, survey, student reported salary
+16. `survey_state`: text, survey, student reported state in which job is located
+
+```{r}
+# Clean the offer data
+# unique(data$survey_offers)
+data$survey_offers[is.na(data$survey_offers)] <- "N/A"
+data$survey_offers[data$survey_offers == "na"] <- "N/A"
+
+# Clean the internship data
+# unique(data$survey_internships)
+data$survey_internships[is.na(data$survey_internships)] <- "N/A"
+data$survey_internships[data$survey_internships == "RPT"] <- "N/A" # do not know the meaning of RPT
+```
+
+One of the prominent challenges in the dataset is the variability in survey responses related to states and company names. These variations need to be standardized to facilitate accurate and consistent analysis.
+
+### Standardizing State Data
+
+```{r}
+# head(unique(data$survey_state), 20)
+
+# Convert to lowercase and remove white spaces
+data$survey_state <- tolower(trimws(data$survey_state))
+# Remove non-alphabetic characters
+data$survey_state <- gsub("[^a-z]", "", data$survey_state)
+# Remove 'usa', 'america', 'unitedstates', 'us', 'unitedstatesofamerica'
+data$survey_state <- gsub("usa|america|unitedstates|us|unitedstatesofamerica", "", data$survey_state)
+
+# Replace full state names with abbreviations
+state_abb <- c(
+  "al", "ak", "az", "ar", "ca", "co", "ct", "de", "fl", "ga", "hi", "id", "il", "in", "ia", "ks", "ky", 
+  "la", "me", "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", 
+  "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy", "dc"
+)
+state_full <- c(
+  "alabama", "alaska", "arizona", "arkansas", "california", 
+  "colorado", "connecticut", "delaware", "florida", "georgia", 
+  "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", 
+  "kentucky", "louisiana", "maine", "maryland", "massachusetts", 
+  "michigan", "minnesota", "mississippi", "missouri", "montana", 
+  "nebraska", "nevada", "newhampshire", "newjersey", "newmexico", 
+  "newyork", "northcarolina", "northdakota", "ohio", "oklahoma", 
+  "oregon", "pennsylvania", "rhodeisland", "southcarolina", 
+  "southdakota", "tennessee", "texas", "utah", "vermont", 
+  "virginia", "washington", "westvirginia", "wisconsin", "wyoming", 
+  "districtofcolumbia"
+)
+
+# Create a mapping dictionary
+state_mapping <- setNames(state_abb, state_full)
+
+# Map state names using the mapping dictionary and convert to uppercase
+data$survey_state <- ifelse(data$survey_state %in% state_full,
+                            state_mapping[data$survey_state], 
+                            data$survey_state)
+
+# Convert to uppercase
+data$survey_state <- toupper(data$survey_state)
+
+# Adding fujianprovince and zhejiang province to china
+data$survey_state[data$survey_state == "FUJIANPROVINCE" | data$survey_state == "ZHEJIANGPROVINCE"] <- "CHINA"
+
+# Standardizing fields with misspells or alternative names
+data$survey_state[data$survey_state == "MICHIGANDETROIT"] <- "MI"
+data$survey_state[data$survey_state == "WASHINGTONDC"] <- "WA"
+data$survey_state[data$survey_state == "OHIOTHE"] <- "OH"
+data$survey_state[data$survey_state == "MASSACHETTS"] <- "MA"
+data$survey_state[data$survey_state == "VIRGINIAVA"] <- "VA"
+
+# Replacing blanks, na and miscellaneous values with "NOT AVAILABLE"
+data$survey_state[is.na(data$survey_state)] <- "N/A"
+data$survey_state[data$survey_state == ""] <- "N/A"
+data$survey_state[data$survey_state == "NA"] <- "N/A"
+data$survey_state[data$survey_state == "TBA" | data$survey_state == "TBD"] <- "N/A"
+
+# unique(data$survey_state)
+```
+
+The data cleaning process for the survey_state data involves standardizing and preparing state names for analysis. Initially, all state names are converted to lowercase and any leading or trailing whitespaces are removed. Non-alphabetic characters and common variations of "USA" and "America" are removed. Full state names are replaced with their respective abbreviations using a mapping dictionary, ensuring consistency. The names are then converted to uppercase for uniformity. State names related to China are grouped appropriately. Misspelled or alternative state names are standardized. Blank, null, and miscellaneous values are replaced with "N/A" to indicate missing or invalid entries. This thorough cleaning ensures the state data is consistent and ready for further analysis or visualization.
+
+After cleaning, the survey_state data is now significantly improved in terms of consistency and readiness for analysis or visualization. The cleaning process resulted in the following set of unique state values:
+
+1.  40 U.S. States
+
+2.  Remote locations
+
+3.  Non-US locations: China, India, Montenegro, Belize, Ireland, Canada, United Kingdom, Turkey.
+
+### Standardizing Company Data
+
+```{r}
+# head(unique(data$survey_company), 20)
+
+# Replacing company names that have JP Morgan or some variations with JP Morgan Chase
+data$survey_company[data$survey_company == "JP Morgan" | data$survey_company == "J.P Morgan" | data$survey_company == "J.P. Morgan" | data$survey_company == "J.P. Morgan U.S. Private Bank" | data$survey_company == "JP Morgan and Chase"  ] <- "JPMorgan Chase"
+data$survey_company[data$survey_company == "JPMorgan Chase & Co."] <- "JPMorgan Chase" 
+data$survey_company[data$survey_company == "JPMorgan Chase"] <- "JPMorgan Chase" 
+
+# Replacing company names with alternative spelling name for EY
+data$survey_company[data$survey_company == "Ernst & Young"] <- "EY"
+data$survey_company[data$survey_company == "Ernst and Young"] <- "EY"
+
+# Replacing company names with alternative spelling name for Textron
+data$survey_company[data$survey_company == "Textron Aviation"] <- "Textron"
+data$survey_company[data$survey_company == "Textron Systems"] <- "Textron"
+data$survey_company[data$survey_company == "Textron Specialized Vehicles"] <- "Textron"
+
+# Replacing company names with alternative spelling name for Coyote Logistics
+data$survey_company[data$survey_company == "CoyoteLogisitcs"] <- "Coyote Logisitcs"
+data$survey_company[data$survey_company == "Coyote"] <- "Coyote Logisitcs"
+
+# Replacing company names with alternative spelling name for Deloitte
+data$survey_company[data$survey_company == "Deloitte Consulting"] <- "Deloitte"
+data$survey_company[data$survey_company == "Deloitte LLP"]	<- "Deloitte"		
+data$survey_company[data$survey_company == "Deloitte Tax"]	<- "Deloitte"		
+data$survey_company[data$survey_company == "Deloitte, China"] <- "Deloitte"
+
+# Replacing company names with alternative spelling name for PNC
+data$survey_company[data$survey_company == "PNC Bank"] <- "PNC"
+data$survey_company[data$survey_company == "PNC Financial Services"] <- "PNC"
+
+# Replacing company names with alternative spelling name for Grainger
+data$survey_company[data$survey_company == "WW Grainger"] <- "W.W. Grainger"
+data$survey_company[data$survey_company == "Grainger"] <- "W.W. Grainger"
+
+# Replacing company names with alternative spelling name for Oracle
+data$survey_company[data$survey_company == "Oracle Netsuite"] <- "Oracle"
+data$survey_company[data$survey_company == "Oracle NetSuite"] <- "Oracle"
+data$survey_company[data$survey_company == "Oracle - Netsuite"] <- "Oracle"
+
+# Replacing other company names with alternative spelling name 
+data$survey_company[data$survey_company ==  "PWC"] <- "PwC"
+data$survey_company[data$survey_company == "Brown Gibbons Lang & Co."] <- "Brown Gibbons Lang & Company"
+data$survey_company[data$survey_company == "Abercrombie & Fitch"] <- "Abercrombie"
+data$survey_company[data$survey_company == "The Cincinnati Insurance Company"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Cincinnati Insurance"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Cincinnati Insurance Company"] <- "The Cincinnati Insurance Companies"
+data$survey_company[data$survey_company == "Terillium"] <- "Terrilium"
+data$survey_company[data$survey_company == "84.51"] <- "84.51º"
+data$survey_company[data$survey_company == "Abbott Nutrition"] <- "Abbott"
+data$survey_company[data$survey_company == "CIBC US"] <- "CIBC"
+data$survey_company[data$survey_company == "Oppenheimer & Co. Inc."] <- "Oppenheimer & Co Inc."
+
+# Replacing blanks, na and miscellaneous values with "NOT AVAILABLE"
+data$survey_company[is.na(data$survey_company)] <- "N/A"
+data$survey_company[data$survey_company == ""] <- "N/A"
+data$survey_company[data$survey_company == "na"] <- "N/A"
+data$survey_company[data$survey_company == "N/A"] <- "N/A"
+data$survey_company[data$survey_company == "Not Yet"] <- "N/A"
+
+# length(unique(data$survey_company))
+# 881
+
+# head(unique(data$survey_company), 20)
+```
+
+The data cleaning process for the `survey_company` section of the dataset involves normalizing company names and handling missing or null values. Various company name variations are replaced with the most frequently observed name to standardize the data. For example, alternative spellings of companies, such as "JP Morgan" and "Ernst & Young," are harmonized. Additionally, specific corrections are made for other companies to ensure consistency. Missing or null values in the survey_company column are replaced with "N/A" to signify missing or invalid entries.
+
+After the cleaning process, the dataset now contains more consistent and standardized company names. Variations and discrepancies in company names have been addressed, and missing values have been replaced with "N/A" for consistency, ensuring that the data is prepared for further analysis.
+
+### Handling Post-Graduation Plans
+
+Students who have decided to pursue graduate programs after graduation may not have applied for jobs or internships, which could result in missing values for `survey_offers`, `survey_internships`, and `survey_company`. Thus, we want to evaluate the percentage of null or zero values at `survey_offers` and `survey_internships` as well as null values at `survey_company` for records with non-null values in either `survey_gradprogram` or `survey_gradschool`.
+
+```{r}
+# unique(data$survey_gradprogram)
+data$survey_gradprogram[is.na(data$survey_gradprogram)] <- "N/A"
+data$survey_gradprogram[data$survey_gradprogram == "N/a"] <- "N/A"
+
+# unique(data$survey_gradschool)
+data$survey_gradschool[is.na(data$survey_gradschool)] <- "N/A"
+data$survey_gradschool[data$survey_gradschool == "N/a"] <- "N/A"
+
+non_null_grad <- data %>%
+  filter(survey_gradschool != "N/A" | survey_gradschool != "N/A")
+
+non_null_grad %>% summarize(
+  no_offers = mean(survey_offers == 'N/A' | survey_offers == 0),
+  no_company = mean(survey_company == 'N/A'),
+  no_intern = mean(survey_internships == 'N/A' | survey_internships == 0)
+  )
+```
+
+```{r}
+data <- data %>%
+  filter(survey_gradprogram == 'N/A' & survey_gradschool == 'N/A') %>%
+  select(-survey_gradprogram, -survey_gradschool)
+```
+
+The results show that the percentages of missing values or zeros in `survey_offers` and `survey_internships` and null values in `survey_company` are noticeable for the subset of students who have decided to pursue graduate programs after graduation. Given the significance of these percentages, we remove observations for students who have goals related to graduate school rather than internships or jobs, as our primary focus is on placement and salary trends.
+
+## EDA of Cleaned Data File {.tabset}
+
+### Data Summary {.unnumbered}
+
+```{r}
+s <- skim(data)
+summary(s)
+```
+
+### Character variables {.unnumbered}
+
+```{r}
+s %>% yank("character")
+```
+
+### Factor variables {.unnumbered}
+
+```{r}
+s %>% yank("factor")
+```
+
+### Numeric variables {.unnumbered}
+
+```{r}
+s %>% yank("numeric")
+```
+
+# FSB Placement Trends 2019-2021
+
+## Fortune 1000 Companies
+
+### Overall
+
+Firstly, to evaluate the company in which students reported they accepted a job, we integrated external data from the Fortune 1000 Companies (From 1996-2023) dataset from Kaggle. The data was scraped from the Fortune website. To determine if a company listed in our survey data is also a part of the Fortune 1000 for the corresponding year, we created a new column named `fortune` in our survey dataset. This column serves as a binary indicator with two values, "Yes" and "No".
+
+```{r}
+fortune1000 <- read_csv('kaggle-fortune500-1996-2023.csv')
+
+# Create a new column to indicate if the company is in Fortune 1000 for the same year
+data$fortune <- NA
+
+# Iterate through each row in survey_data
+for (i in 1:nrow(data)) {
+  survey_company <- data$survey_company[i]
+  survey_year <- data$year.x[i]
+
+  # Filter the Fortune 1000 data for the same year
+  fortune1000_subset <- fortune1000[fortune1000$year == survey_year, ]
+
+  # Check if survey_company is included in any company name in the Fortune 1000 subset
+  if (any(grepl(survey_company, fortune1000_subset$Name))) {
+    data$fortune[i] <- "Yes"
+  } else {
+    data$fortune[i] <- "No"
+  }
+}
+```
+
+### By Majors and Minors
+
+```{r}
+
+```
+
+## Job Offers and Internships
+
+### Overall
+
+```{r}
+
+```
+
+### By Majors and Minors
+
+```{r}
+
+```
+
+#### Regression Analysis: Does Number of Majors and Minors Matter?
+
+Hypothesis Testing: Does having a second majors or having at least one minor influence the job/internship application results of FSB students?
+
+```{r}
+
+```
+
+#### Regression Analysis: Does GPA Matter?
+
+Hypothesis Testing: Does GPA range influence the job/internship application results of FSB students?
+
+```{r}
+
+```
+
+## Salary
+
+### Overall
+
+```{r}
+
+```
+
+### By Majors and Minors
+
+```{r}
+
+```
+
+### By Job Locations
+
+```{r}
+
+```
+
+# Conclusions and Reccommedations
+
+# References
+
+# Our Computing Environment
+
+Our RStudio Version:
+
+RStudio 2023.09.0+463 "Desert Sunflower" Release (b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36
+
+Additionally, we are using the packages DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable and tm.
