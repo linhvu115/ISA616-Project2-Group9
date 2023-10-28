@@ -362,14 +362,27 @@ for (i in 1:nrow(data)) {
 ### Overall
 
 ```{r}
-
+data %>%
+  count(survey_internships, survey_offers, sort = TRUE)
 ```
+The most common responses for `survey_internships` and `survey_offers` are N/A, with 509 in total. Followed after this are those who performed 2 internships and received 1 job offer, with 371 results, and those who performed 1 internship and received 1 job offer is net, with 357 results. This dataframe sorts the count of responses for students in terms of the number of internships they had as well as the number of job offers they received in descending order.
+
 
 ### By Majors and Minors
 
 ```{r}
+data1 = data %>%
+  mutate(survey_internships = as.numeric(survey_internships)) %>%
+  mutate(survey_offers = as.numeric(survey_offers)) %>%
+  drop_na()
 
+data_major = data1 %>%
+  group_by(major1, minor1, minor2) %>%
+  count(survey_internships, survey_offers, sort = TRUE)
+
+data_major
 ```
+We are interested in finding out more information about the concentration of internships and job offers by majors and minors. This dataframe sorts the count of responses from students in terms of the number of internships they had as well as the number of job offers they received in descending order by major and minor. The major that received more job offers are Finance, Accountancy and Marketing, and among those students, they only have one primary major and no minor.
 
 #### Regression Analysis: Does Number of Majors and Minors Matter?
 
@@ -392,8 +405,11 @@ Hypothesis Testing: Does GPA range influence the job/internship application resu
 ### Overall
 
 ```{r}
-
+data %>%
+  drop_na %>%
+  count(survey_salary, sort = TRUE)
 ```
+Salary ranges from ```{r} ```
 
 ### By Majors and Minors
 
