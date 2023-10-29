@@ -408,22 +408,39 @@ Hypothesis Testing: Does GPA range influence the job/internship application resu
 data %>%
   drop_na %>%
   count(survey_salary, sort = TRUE)
+
+data2 = data %>%
+  drop_na 
+
+summary(data2$survey_salary)
 ```
-Salary ranges from ```{r} ```
+Salary of survey respondents ranges from $20,800 to $95,000, with a mean value of $58,103 and a median value of $58,500. The most frequent salary amount that can be observed is $60,000, with 23 responses, which is followed by $50,000 - 21 responses, and $65,000 - 19 responses - subsequently. This is just the general overview of the `survey_salary` field, and we will take a deeper dive in terms of major and minor concentrtion, as well as job locations. 
 
 ### By Majors and Minors
 
 ```{r}
-
+data2 %>%
+  group_by(major1, minor1, minor2) %>%
+  count(survey_salary) %>%
+  arrange(desc(n))
 ```
+When further subsetted into major and minor, the most common salary amount observed from `survey_salary` is $40,000 from students who majored in Marketing and had no minor. Those who majored in Accountancy and also had no minor had the second most responses, with a salary amount of $53,000. A similar trend can also be applied for students with a Finance major, and their salaries numbered $60,000, $65,000 and $70,000 respectively.
 
 ### By Job Locations
 
 ```{r}
+data2 %>%
+  group_by(survey_state) %>%
+  count(survey_salary, sort = TRUE) 
 
+data2 %>%
+  group_by(survey_state) %>%
+  summarise(avg_salary = mean(survey_salary)) %>%
+  arrange(desc(avg_salary))
 ```
+Ohio and Illinois received more responses than other locations when sorting `survey_salary` by count. However, these locations' average salaries are lower compared to the rest, around $56,067 and $59,660 respectively. The location with the highest average salary is Washington DC, with $79,067, only had three survey responses in total, which likely skewed the result to be above the rest. District of Colombia is similar, as there was only one response of $71,000, placing the state in second place. 
 
-# Conclusions and Reccommedations
+# Conclusions and Recommedations
 
 # References
 
