@@ -298,6 +298,9 @@ The results show that the percentages of missing values or zeros in `survey_offe
 ### Data Summary {.unnumbered}
 
 ```{r}
+# Exporting the cleaned data file
+saveRDS(data, file = "cleaned_FSB_survey_data.RDS")
+
 s <- skim(data)
 summary(s)
 ```
@@ -324,8 +327,6 @@ s %>% yank("numeric")
 
 ## Fortune 1000 Companies
 
-### Overall
-
 Firstly, to evaluate the company in which students reported they accepted a job, we integrated external data from the Fortune 1000 Companies (From 1996-2023) dataset from Kaggle. The data was scraped from the Fortune website. To determine if a company listed in our survey data is also a part of the Fortune 1000 for the corresponding year, we created a new column named `fortune` in our survey dataset. This column serves as a binary indicator with two values, "Yes" and "No".
 
 ```{r}
@@ -351,11 +352,77 @@ for (i in 1:nrow(data)) {
 }
 ```
 
-### By Majors and Minors
+### Overall Trend {.tabset}
+
+#### By Year {.unnumbered}
 
 ```{r}
-
+data %>%
+  group_by(year.x) %>%
+  summarize(Count = sum(fortune == "Yes"),
+            Percentage = round((Count / n()), 2)) %>%
+  kable("html", escape = FALSE, caption = "Fortune 1000 Company Count and Percentage by Year")
 ```
+
+The data illustrates a consistent trend in Fortune 1000 company placements from 2019 to 2021, with 150 placements (0.15%) in 2021 compared to 145 (0.14%) in 2019, indicating a relatively stable situation.
+
+#### By Student Demographic {.unnumbered}
+
+```{r}
+data %>%
+  group_by(Gender, IPEDS.Race.Ethnicity) %>%
+  summarize(Company_Count = sum(fortune == "Yes")) %>%
+  kable("html", escape = FALSE, caption = "Fortune 1000 Company Count by Student Demographic")
+```
+
+It's evident that the majority of placements are among White students, with 160 placements for females and 166 for males. Other demographic groups, such as Asian and Hispanic/Latino students, also secured notable placements, suggesting diversity in Fortune 1000 job opportunities.
+
+### By Majors and Minors
+
+For each student, their primary major (`major1`) and secondary major (`major2`) were collected, along with the year they graduated and whether they secured a job in a Fortune 1000 company. Note that observations where the secondary major was listed as "none" were omitted. Below is a comprehensive table that provides a summary of Fortune 1000 company counts and percentages based on students' majors and graduation years.
+
+```{r}
+# Create an empty data frame to store the data
+major_fortune <- data.frame(major = character(0), fortune = character(0), year = character(0))
+
+# Iterate through each row in the original dataset
+for (i in 1:nrow(data)) {
+  major1 <- data$major1[i]
+  major2 <- data$major2[i]
+  year <- data$year.x[i]
+  fortune <- data$fortune[i]
+  
+  # Append major1 data to the new dataset
+  major_fortune <- rbind(major_fortune, data.frame(major = major1, fortune = fortune, year = year))
+  
+  # Ignore observations where major2 is "none"
+  if (major2 != "none") {
+      # Append the data to the new dataset
+      major_fortune <- rbind(major_fortune, data.frame(major = major2, fortune = fortune, year = year))
+  }
+}
+
+major_fortune %>%
+  group_by(major, year) %>%
+  summarize(
+    Count = sum(fortune == "Yes"),
+    Percentage = round((Count / n()), 2)) %>%
+  kable("html", escape = FALSE, caption = "Fortune 1000 Company Count and Percentage by Major")
+```
+
+The above summary reveals several noteworthy trends:
+
+-   **Accountancy**: This major had a significant increase in both count and percentage from 2019 to 2021, making it one of the notable success stories. In 2019, 5 graduates (0.03%) secured Fortune 1000 positions, which increased to 14 graduates (0.09%) in 2021.
+
+-   **Finance**: Finance majors consistently maintained a strong presence in Fortune 1000 companies throughout the three years. The count remained relatively high, with 60 graduates (0.17%) in 2019, 45 graduates (0.12%) in 2020, and 45 graduates (0.14%) in 2021.
+
+-   **Human Capital Management & Leadership**: This major exhibited remarkable growth, with a significant increase in the percentage of graduates securing Fortune 1000 positions. In 2020, 1 graduate (0.06%) joined such companies, while the percentage surged to 15 graduates (0.28%) in 2021, indicating the potential and demand for this field.
+
+-   **Business Analytics**: While the overall numbers are relatively low, the percentage of graduates securing Fortune 1000 positions increased from 2019 (0.14%) to 2021 (0.13%).
+
+-   **Marketing**: Marketing had a consistent presence, with percentages increasing slightly over the three years, making it a promising major for Fortune 1000 job placements.
+
+-   **Business Economics**: Though the percentage declined from 2019 (0.17%) to 2021 (0.05%), Business Economics graduates still accounted for a substantial number of placements.
 
 ## Job Offers and Internships
 
@@ -363,41 +430,101 @@ for (i in 1:nrow(data)) {
 
 ```{r}
 data %>%
-  count(survey_internships, survey_offers, sort = TRUE)
+  group_by(year.x) %>%
+  summarize(
+    Count_Intern = sum(survey_internships != "N/A" & survey_internships != "0"),
+    Count_Offer = sum(survey_offers != "N/A" & survey_offers != "0")
+  ) %>%
+  kable("html", escape = FALSE, caption = "Number of Students with Internships and Job Offers by Year")
 ```
-The most common responses for `survey_internships` and `survey_offers` are N/A, with 509 in total. Followed after this are those who performed 2 internships and received 1 job offer, with 371 results, and those who performed 1 internship and received 1 job offer is net, with 357 results. This dataframe sorts the count of responses for students in terms of the number of internships they had as well as the number of job offers they received in descending order.
 
+The table illustrates a trend over the years regarding the number of students at FSB who reported having internships and job offers. It shows an overall increase in both categories from 2019 to 2021, with the highest counts of students having internships and job offers in 2021. This suggests a positive trend in student internship and job placement rates over this three-year period.
 
 ### By Majors and Minors
 
+Firstly, we observed that "3" has the highest count among responses with more than 2 offers in our dataset, so in order to maintain consistency and simplify the analysis, we decided to replace "2+" and "multiple" with "3" to reflect the most common scenario in the data. Secondly, we created a new column 'nminor' to count the number of minors for each student. Then we summarize the results to provide insights into how the number of majors and minors may influence students' internship and job offers.
+
 ```{r}
+data <- data %>%
+  mutate(survey_offers = ifelse(survey_offers %in% c("2+", "multiple"), "3", survey_offers))
+
+data$nminor <- ifelse(data$minor1 != "No Minor" & data$minor2 != "No Minor", 2,
+                      ifelse(data$minor1 != "No Minor" | data$minor2 != "No Minor", 1, 0))
+data$nminor <- as.integer(data$nminor)
+
+# data %>% summarize(null_intern = mean(survey_internships == "N/A"), null_offer = mean(survey_offers == "N/A"))
+
 data1 = data %>%
   mutate(survey_internships = as.numeric(survey_internships)) %>%
   mutate(survey_offers = as.numeric(survey_offers)) %>%
   drop_na()
 
-data_major = data1 %>%
-  group_by(major1, minor1, minor2) %>%
-  count(survey_internships, survey_offers, sort = TRUE)
-
-data_major
-```
-We are interested in finding out more information about the concentration of internships and job offers by majors and minors. This dataframe sorts the count of responses from students in terms of the number of internships they had as well as the number of job offers they received in descending order by major and minor. The major that received more job offers are Finance, Accountancy and Marketing, and among those students, they only have one primary major and no minor.
-
-#### Regression Analysis: Does Number of Majors and Minors Matter?
-
-Hypothesis Testing: Does having a second majors or having at least one minor influence the job/internship application results of FSB students?
-
-```{r}
-
+data1 %>%
+  group_by(nmajor, nminor) %>%
+  summarize(
+    Count = n(),
+    Mean_Intern = mean(survey_internships),
+    Median_Intern = median(survey_internships),
+    Mean_Offers = mean(survey_offers),
+    Median_Offers = median(survey_offers)
+)
 ```
 
-#### Regression Analysis: Does GPA Matter?
-
-Hypothesis Testing: Does GPA range influence the job/internship application results of FSB students?
+The result above shows that having one or two majors appears to have a more noticeable impact on the number of internships compared to the number of minors. However, the difference in means is not substantial, suggesting that the choice of majors and minors may not be the sole determining factor in the number of internships and job offers. Other factors, such as individual skills, networking, and job market conditions, may also play a significant role in students' career opportunities.
 
 ```{r}
+# Create an empty data frame to store the data
+major_offer <- data.frame(major = character(0), internships = numeric(0), offers = numeric(0), year = character(0))
 
+# Iterate through each row in the original dataset
+for (i in 1:nrow(data1)) {
+  major1 <- data1$major1[i]
+  major2 <- data1$major2[i]
+  internship <- data1$survey_internships[i]
+  offer <- data1$survey_offers[i]
+  year <- data1$year.x[i]
+  
+  # Major 1
+  major_offer <- rbind(major_offer, data.frame(major = major1, internships = internship, offers = offer, year = year))
+  
+  # Major 2
+  if (major2 != "none") {
+      major_offer <- rbind(major_offer, data.frame(major = major2, internships = internship, offers = offer, year = year))
+  }
+}
+
+major_offer %>%
+  group_by(major, year) %>%
+  summarize(
+    Mean_Intern = mean(internships),
+    Median_Intern = median(internships),
+    Mean_Offers = mean(offers),
+    Median_Offers = median(offers))
+```
+
+The table above summarizes the mean and median numbers of internships and job offers by major and year to provides insights into the internship and job offer outcomes of FSB students over the year 2019-2021. It appears that the major **Business Analytics** performs well in terms of internships and job offers. In 2019, students majoring in Business Analytics had the highest average number of internships (2.50) among all the majors. Additionally, they maintained a relatively high average number of job offers over the years. **Finance** is another major that consistently performs well in terms of job offers, with an average number of offers above 1.80 in all years.
+
+### By GPA Ranges
+
+The table below illustrates that students in the "3.00 - 3.49" and "3.50 - 4.00" GPA ranges have the highest number of internships and job offers, suggesting a potential positive correlation between higher GPAs and securing these opportunities. However, it's important to note that there are exceptions, as some students with lower GPAs also reported having internships and job offers.
+
+```{r}
+data %>%
+  group_by(GPA.Range) %>%
+  summarize(
+    Count_Intern = sum(survey_internships != "N/A" & survey_internships != "0"),
+    Count_Offer = sum(survey_offers != "N/A" & survey_offers != "0")
+  ) %>%
+  kable("html", escape = FALSE, caption = "Number of Students with Internships and Job Offers by Year")
+```
+
+We would like to see how FSB students perform academically over the years 2019-2021 in terms of their GPA. From the table below, in 2019 and 2020, a significant proportion of FSB students had moderate GPAs in the "3.00 - 3.49" range, with a smaller percentage achieving higher GPAs. In 2021, there is a shift with fewer students in the "3.00 - 3.49" range and a slight increase in students achieving higher GPAs in the "3.50 - 4.00" range. This could indicate potential changes in academic performance within the FSB student population over the years.
+
+```{r}
+data %>%
+  group_by(year.x) %>%
+  summarize(Count_3.0 = round(sum(GPA.Range == "3.00 - 3.49")/n(), 2),
+            Count_3.5 = round(sum(GPA.Range == "3.50 - 4.00")/n(), 2))
 ```
 
 ## Salary
@@ -405,49 +532,137 @@ Hypothesis Testing: Does GPA range influence the job/internship application resu
 ### Overall
 
 ```{r}
-data %>%
-  drop_na %>%
-  count(survey_salary, sort = TRUE)
-
 data2 = data %>%
-  drop_na 
+  drop_na(survey_salary)
+
+data2 %>% count(survey_salary, sort = TRUE)
 
 summary(data2$survey_salary)
 ```
-Salary of survey respondents ranges from $20,800 to $95,000, with a mean value of $58,103 and a median value of $58,500. The most frequent salary amount that can be observed is $60,000, with 23 responses, which is followed by $50,000 - 21 responses, and $65,000 - 19 responses - subsequently. This is just the general overview of the `survey_salary` field, and we will take a deeper dive in terms of major and minor concentrtion, as well as job locations. 
+
+Salary of survey respondents ranges from \$10,000 to \$175,000, with a mean value of \$58,130 and a median value of \$58,000. The most frequent salary amount that can be observed is \$60,000, followed by \$55,000 and \$65,000. This is just the general overview of the `survey_salary` field, and we will take a deeper dive in terms of major and minor concentration, as well as job locations.
+
+### By Year
+
+```{r}
+data2 %>% group_by(year.x) %>% summarize(mean = mean(survey_salary))
+```
+
+The data shows some variation in the average salary of FSB students over the years 2019-2021. While there was an increase from 2019 to 2020, there was a slight decrease in 2021. These changes in average salary may be influenced by various factors such as job market conditions, economic trends, and individual career choices among FSB graduates during those years.
 
 ### By Majors and Minors
 
 ```{r}
-data2 %>%
-  group_by(major1, minor1, minor2) %>%
-  count(survey_salary) %>%
-  arrange(desc(n))
-```
-When further subsetted into major and minor, the most common salary amount observed from `survey_salary` is $40,000 from students who majored in Marketing and had no minor. Those who majored in Accountancy and also had no minor had the second most responses, with a salary amount of $53,000. A similar trend can also be applied for students with a Finance major, and their salaries numbered $60,000, $65,000 and $70,000 respectively.
+# Create an empty data frame to store the data
+major_salary <- data.frame(major = character(0), salary = numeric(0), year = character(0))
 
-### By Job Locations
+# Iterate through each row in the original dataset
+for (i in 1:nrow(data1)) {
+  major1 <- data1$major1[i]
+  major2 <- data1$major2[i]
+  salary <- data1$survey_salary[i]
+  year <- data1$year.x[i]
+  
+  # Major 1
+  major_salary <- rbind(major_salary, data.frame(major = major1, salary = salary, year = year))
+  
+  # Major 2
+  if (major2 != "none") {
+      major_salary <- rbind(major_salary, data.frame(major = major2, salary = salary, year = year))
+  }
+}
+
+major_salary %>%
+  group_by(major) %>%
+  summarize(mean = mean(salary), median = median(salary)) %>%
+  arrange(desc(mean))
+```
+
+From the table above, we see that Business Analytics and Information Systems majors tend to have the highest salaries on average, followed closely by Business Economics and Finance, while Marketing majors have the lowest mean salary. Therefore, the choice of major has potential influence on the salary after graduation, and this summary can help students and educators understand the potential salary outcomes associated with different majors within FSB.
+
+### By Job Locations {.tabset}
+
+#### U.S. States {.unnumbered}
 
 ```{r}
 data2 %>%
-  group_by(survey_state) %>%
-  count(survey_salary, sort = TRUE) 
-
-data2 %>%
+  filter(!(survey_state %in% c("N/A", "REMOTE", "CHINA", "INDIA", "BELIZE", "IRELAND", "UNITEDKINGDOM", "TURKEY"))) %>%
   group_by(survey_state) %>%
   summarise(avg_salary = mean(survey_salary)) %>%
   arrange(desc(avg_salary))
 ```
-Ohio and Illinois received more responses than other locations when sorting `survey_salary` by count. However, these locations' average salaries are lower compared to the rest, around $56,067 and $59,660 respectively. The location with the highest average salary is Washington DC, with $79,067, only had three survey responses in total, which likely skewed the result to be above the rest. District of Colombia is similar, as there was only one response of $71,000, placing the state in second place. 
+
+The table shows the average salary by job locations in the U.S.. The highest reported average salary is \$175,000 in Montana (MT), but this value is based on a single observation and may not be indicative of the broader employment landscape in the state. Additionally, there are other states having average salaries above \$65,000, namely Washington, Utah, Louisiana, Maryland, California, New York, and Virginia, indicating that jobs in these regions may offer more competitive compensation compared to other states.
+
+#### Remote vs. On-site {.unnumbered}
+
+We realized that only the survey responses for job offers in the year 2021 include job locations categorized as 'REMOTE,' while there were no recorded responses indicating remote job locations in the years 2019 and 2020.
+
+```{r}
+data2 <- data2 %>%
+  filter(survey_state != "N/A") %>%
+  mutate(job_location = ifelse(survey_state == "REMOTE", "Remote", "Onsite"))
+
+data2 %>% group_by(year.x, job_location) %>% summarize(count = n())
+```
+
+The comparison table below indicates that onsite job positions tend to have a slightly higher average salary compared to remote positions. However, it's important to note that the sample size of the survey responses for remote jobs is limited, which may impact the accuracy of this comparison.
+
+```{r}
+data2 %>% filter(year.x == "2021") %>% 
+  group_by(job_location) %>% 
+  summarize(avg_salary = mean(survey_salary))
+```
+
+#### U.S. vs. Non-U.S. {.unnumbered}
+
+The table below indicates that, on average, job positions within the U.S. tend to have higher salaries compared to those outside the U.S. The year 2020 witnessed a significant discrepancy in salary between the two categories, with U.S. salaries being substantially higher. It's important to note that several factors, including job location, cost of living, and the job market, can influence these differences in average salaries.
+
+```{r}
+data2 <- data2 %>%
+  mutate(job_country = ifelse(survey_state %in% c("CHINA", "INDIA", "BELIZE", "IRELAND", "UNITEDKINGDOM", "TURKEY"),
+"Non U.S.", "U.S."))
+
+# Exporting the data file
+saveRDS(data2, file = "Job_Location_data.RDS")
+
+data2 %>%
+  group_by(year.x, job_country) %>% 
+  summarize(avg_salary = mean(survey_salary))
+```
 
 # Conclusions and Recommedations
 
+1. **Placement Trends:** 
+
+- Our analysis reveals that FSB's placement results have shown stability over the past three years. The percentage of students securing jobs or job offers has remained consistent, indicating that FSB's placement efforts have been effective in maintaining steady placement rates. To continue this success, we recommend ongoing investments in career development resources and strengthening relationships with industry partners.
+
+2. **Salary Trends:**
+
+- In terms of salary trends, we observed variations over the years. Salaries for FSB graduates have remained relatively stable, with minor fluctuations. The year 2020 saw a peak in average salaries, while 2021 witnessed a slight decrease. Overall, FSB graduates continue to enjoy competitive salaries.
+
+- While salary trends have been generally stable, addressing the slight fluctuations seen in 2020 and 2021 could be beneficial. To achieve this, FSB can focus on assisting students in negotiation skills and encouraging participation in high-demand industries or job markets.
+
+3. **Major-Specific Analysis:** 
+
+- Examining placement and salary trends on a major-specific level provides insights into the performance of various academic programs. Major-specific trends indicate that certain majors consistently outperform others in terms of both placement and salary, such as Business Analytics, Information Systems, and Finance. 
+
+- To improve outcomes for programs with lower placement and salary rates, FSB should consider tailored interventions such as industry partnerships, networking opportunities, and internship programs. Emulating successful strategies from higher-performing programs can help elevate the overall performance of FSB's graduates. This analysis enables FSB to tailor its strategies and investments to further strengthen underperforming programs while maintaining the strengths of successful ones.
+
 # References
+
+1. [Kaggle Dataset: Fortune 1000 Companies (From 1996)](https://www.kaggle.com/datasets/garrethlee/fortune-500-companies-dataset)
 
 # Our Computing Environment
 
-Our RStudio Version:
+```{r}
+sessionInfo()
+```
 
-RStudio 2023.09.0+463 "Desert Sunflower" Release (b51c81cc303d4b52b010767e5b30438beb904641, 2023-09-25) for windows Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.09.0+463 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36
+**R Packages:** DataExplorer, tidyverse, readxl, zoo, stargazer, kableExtra, skimr, plotly, ggpubr, vtable, and tm.
 
-Additionally, we are using the packages DataExplorer,tidyverse,readxl,zoo,stargazer,kableExtra,skimr,plotly,ggpubr,vtable and tm.
+**Version Control:**  
+- We used Git and hosted our project on GitHub. The repository can be accessed at [Project Repository](https://github.com/linhvu115/ISA616-Project2-Group9).
+
+**Reproducibility:**  
+- We organized our project using R projects for better reproducibility and sharing. We also included a comprehensive README file with a list of the files within our project folder as well as the instructions to run files in a certain order.
