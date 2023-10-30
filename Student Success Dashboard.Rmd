@@ -132,61 +132,43 @@ ggplotly(n)
 
 ## Column {data-width=400}
 
-### Data Table of Placement by Major
+### Number of Students Having a Job at Fortune 1000 Companies By Each Major
 
 ```{r,echo=FALSE}
 major_fortune = readRDS("major_fortune.RDS")
+major_fortune_count <- major_fortune %>%
+  group_by(major) %>%
+  summarize(Count = sum(fortune == "Yes")) %>%
+  filter(Count > 0) %>%
+  arrange(desc(Count))
 
-ggplot(data, aes(x = Major, y = Fortune1000_Count)) +
-  geom_bar(stat = "identity", fill = "blue") +
-  labs(
-    title = "Placement by Major in Fortune 1000 Companies",
-    x = "Major",
-    y = "Number of Fortune 1000 Companies"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-data2 = data %>%
-  group_by(major1) %>%
-  summarize(
-    student_count = n(),
-    avg_salary = dollar(mean(survey_salary, na.rm = TRUE))
-  ) %>%
-  arrange(major1)
-
-datatable(data2, rownames = F, extensions = 'Buttons',
-          options = list(dom = 'Bfrtip',
-                         buttons = c('copy','csv','excel')
-                         ))
-```
-
-### Changes in Salary from 2019-2021 by Top 5 Major with Highest Average Salary
-
-```{r,echo=FALSE}
-# Select the top 5 majors with the highest average salary
-major_5 <- data %>%
-  group_by(major1) %>%
-  summarize(Average_Salary = mean(survey_salary, na.rm = TRUE)) %>%
-  top_n(5, Average_Salary) %>%
-  pull(major1)
-
-salary_5_changes <- data %>%
-  group_by(major1, year.x) %>%
-  summarize(Average_Salary = mean(survey_salary, na.rm = TRUE)) %>%
-  filter(major1 %in% major_5)
-
-# Create a line plot to visualize changes in salary by major from 2019 to 2021
-p = ggplot(salary_5_changes, aes(x = year.x, y = Average_Salary, group = major1, color = major1)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(x = "Year",
-       y = "Average Salary ($)",
-       caption = "Data Source: FSB Survey Data") +
+# Create a bar chart
+p1 = ggplot(major_fortune_count, aes(y = reorder(major, Count), x = Count)) +
+  geom_bar(stat = "identity", fill = "dodgerblue3") +
+  labs(x = "Number of Students", y="") +
   theme_minimal()
 
-ggplotly(p)
+ggplotly(p1)
+```
+
+### Number of Students Having Internships and Job Offers by Major
+
+```{r,echo=FALSE}
+major_offer = readRDS("major_offer.RDS")
+major_offer_count <- major_offer %>%
+  group_by(major) %>%
+  summarize(Count_intern = sum(internships > 0),
+            Count_offer = sum(offers > 0))
+count_long <- pivot_longer(major_offer_count, cols = starts_with("Count"), names_to = "Count_type", values_to = "Count")
+
+# Create a double bar chart
+p2 = ggplot(count_long, aes(y = reorder(major, Count), x = Count, fill = Count_type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(y = "") +
+  scale_fill_discrete("Number of Offers", labels=c("Internship", "Job")) +
+  theme_minimal()
+
+ggplotly(p2)
 ```
 
 
@@ -195,18 +177,18 @@ ggplotly(p)
 ### Average Salary by Majors
 
 ```{r,echo=FALSE}
-p = data %>%
-  group_by(major1) %>%
-  summarize(avg_salary = mean(survey_salary, na.rm = TRUE)) %>%
-  filter(!is.na(avg_salary) & avg_salary > 0) %>%
-  arrange(desc(avg_salary)) %>%
-  ggplot(aes(x = avg_salary, y = reorder(major1, -avg_salary))) +
+major_salary = readRDS("major_salary.RDS")
+
+p3 = major_salary %>%
+  group_by(major) %>%
+  summarize(avg_salary = mean(salary)) %>%
+  ggplot(aes(x = avg_salary, y = reorder(major, avg_salary))) +
   geom_bar(stat = "identity", fill = "dodgerblue3") +
   labs(x = "Average Salary ($)",
        y = "Major",
        caption = "Data Source: FSB Survey Data") +
   theme_minimal()
 
-ggplotly(p)
+ggplotly(p3)
 ```
 
