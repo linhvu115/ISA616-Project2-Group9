@@ -116,6 +116,19 @@ ggplotly(n)
 ### Data Table of Placement by Major
 
 ```{r,echo=FALSE}
+major_fortune = readRDS("major_fortune.RDS")
+
+ggplot(data, aes(x = Major, y = Fortune1000_Count)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(
+    title = "Placement by Major in Fortune 1000 Companies",
+    x = "Major",
+    y = "Number of Fortune 1000 Companies"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
 data2 = data %>%
   group_by(major1) %>%
   summarize(
