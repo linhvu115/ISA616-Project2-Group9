@@ -385,6 +385,9 @@ For each student, their primary major (`major1`) and secondary major (`major2`) 
 # Create an empty data frame to store the data
 major_fortune <- data.frame(major = character(0), fortune = character(0), year = character(0))
 
+# Exporting the cleaned data file
+saveRDS(major_fortune, file = "major_fortune.RDS")
+
 # Iterate through each row in the original dataset
 for (i in 1:nrow(data)) {
   major1 <- data$major1[i]
@@ -476,6 +479,9 @@ The result above shows that having one or two majors appears to have a more noti
 # Create an empty data frame to store the data
 major_offer <- data.frame(major = character(0), internships = numeric(0), offers = numeric(0), year = character(0))
 
+# Exporting the cleaned data file
+saveRDS(major_offer, file = "major_offer.RDS")
+
 # Iterate through each row in the original dataset
 for (i in 1:nrow(data1)) {
   major1 <- data1$major1[i]
@@ -555,6 +561,9 @@ The data shows some variation in the average salary of FSB students over the yea
 ```{r}
 # Create an empty data frame to store the data
 major_salary <- data.frame(major = character(0), salary = numeric(0), year = character(0))
+
+# Exporting the cleaned data file
+saveRDS(major_salary, file = "major_salary.RDS")
 
 # Iterate through each row in the original dataset
 for (i in 1:nrow(data1)) {
