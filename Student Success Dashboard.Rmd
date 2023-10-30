@@ -27,7 +27,7 @@ data = readRDS("cleaned_FSB_survey_data.RDS")
 
 An overall summary of our project
   
-## row {data-width=600}
+## row {data-width=500}
 
 ### The Question We Want to Answer
 
@@ -37,30 +37,53 @@ We have created two pages in our dashboard, each with insights into student plac
 
 Through this, we would be able to derive more insights into which year and major we should place more investment in respectively. This would allow us to devise a more effective management method for the growth and advancement of the Farmer School.
 
-## row {data-height=600}
+### Our Findings
 
-### Additional Insights
+From 2019 to 2021, students' GPA Ranges have slightly increased, with a lower shift from those with the "3.00 - 3.49" range and an increase in the "3.500 - 4.00" range. This is an indication of improved academic performance from our students.
+
+In terms of salary trends, we observed variations over the years. Salaries for FSB graduates have remained relatively stable, with minor fluctuations. The year 2020 saw a peak in average salaries, while 2021 witnessed a slight decrease. Overall, FSB graduates continue to enjoy competitive salaries.
+
+Examining placement and salary trends on a major-specific level provides insights into the performance of various academic programs. Major-specific trends indicate that certain majors consistently outperform others in terms of both placement and salary, such as Business Analytics, Information Systems, and Finance. 
+
+
+## row {data-height=700}
+
+### Overall Data Table
 
 ```{r,echo=FALSE}
+datatable = data %>%
+  group_by(major1, year.x) %>%
+  summarize(
+    student_count = n(),
+    avg_salary = dollar(mean(survey_salary, na.rm = TRUE))
+  ) %>%
+  arrange(major1)
 
+datatable(datatable, rownames = F, extensions = 'Buttons',
+          options = list(dom = 'Bfrtip',
+                         buttons = c('copy','csv','excel')
+                         ))
 ```
-
 # Placement by Year {data-orientation=columns}
 
 ## Column {data-width=500}
 
-### Data Table of Placement by Year
+### GPA Ranges by Year
 
 ```{r,echo=FALSE}
 data1 = data %>%
-  group_by(major1, year.x, survey_company) %>%
-  summarize(count = n()) %>%
-  arrange(major1, - count)
+  group_by(GPA.Range, year.x) %>%
+  summarize(count = n()) 
 
-datatable(data1, rownames = F, extensions = 'Buttons',
-          options = list(dom = 'Bfrtip',
-                         buttons = c('copy','csv','excel')
-                         ))
+a = ggplot()+
+  geom_col(aes(x = year.x, y = count, fill = GPA.Range),  data = data1)+
+  xlab("Year")+
+  ylab("Number of Responses")+
+  theme_bw()+
+  theme(axis.title.x = element_text(margin=margin(r=12)),
+        axis.title.y = element_text(margin=margin(r=12)))
+
+ggplotly(a)
 ```
 
 ### Average Salary Placement by Year
@@ -72,43 +95,39 @@ data2 = data %>%
   summarize(avg = mean(survey_salary))
 
 m = ggplot()+
-  geom_col(aes(x = year.x, y = avg), fill = "#C8102E", data = data2)+
+  geom_col(aes(x = year.x, y = avg), fill = "dodgerblue3", data = data2)+
   xlab("Year")+
   ylab("Average Salary")+
   theme_bw()+
   theme(axis.title.x = element_text(margin=margin(r=12)),
-        axis.title.y = element_text(margin=margin(r=12)))+
-  coord_flip()
+        axis.title.y = element_text(margin=margin(r=12)))
 
 ggplotly(m)
 ```
 
 ## Column {data-width=600}
 
-### Top 10 Survey Companies Salary's Placement
+### Top 10 US Locations by Salary
 
 ```{r,echo=FALSE}
 data3 = data %>%
   drop_na(survey_salary) %>%
-  group_by(survey_company, year.x) %>%
+  group_by(survey_state) %>%
   summarize(avg = mean(survey_salary)) %>%
   arrange(desc(avg)) %>%
   head(10)
 
 n = ggplot()+
-  geom_col(aes(x = survey_company, y = avg), fill = "#C8102E", data = data3)+
+  geom_col(aes(x = reorder(survey_state, -avg), y = avg), 
+           fill = "dodgerblue3", data = data3)+
   theme_bw()+
-  facet_wrap(~ year.x)+
-  theme(axis.title.x = element_blank(),
-        axis.text.x= element_blank(),
-        axis.ticks.x= element_blank(),
-        axis.title.y = element_text(margin=margin(r=100)))+
+  theme(axis.title.y = element_text(margin=margin(r=100)))+
+  xlab("State")+
+  ylab("Average Salary")+
   coord_flip()
 
 ggplotly(n)
 ```
-
-
 # Placement by Major {data-orientation=columns}
 
 ## Column {data-width=400}
