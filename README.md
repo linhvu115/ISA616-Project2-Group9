@@ -76,3 +76,16 @@ We have three years of data representing FSB graduates, including graduates in 2
 40. `survey_pref_loc`: text, survey, student reported whether working in preferred location
 41. `survey_salary`: numeric, survey, student reported salary
 42. `survey_state`: text, survey, student reported state in which job is located
+
+## Instructions
+
+We recommend running the Student Success Project.Rmd first before the Student Success Dashboard. Rmd. This is because the first file reads in the original data survey and cleans it. The file also exports additional rds files for the second file to read in and use.  
+
+## List of All Files
+
+1. FSB_BI_Survey_2019_2021.rds: the original survey data file
+2. Student Success Project.Rmd : our data cleaning and analysis file
+3. kaggle-fortune500-1996-2023.csv : external dataset that we utilize in our analysis
+4. Student Success Project.html : the data cleaning and analysis file knitted
+5. Student Success Dashboard.Rmd : our dashboard that contains visualizations
+6. Student Success Dashboard.html : our knitted dashboard
